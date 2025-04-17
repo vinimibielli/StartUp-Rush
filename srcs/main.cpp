@@ -1,11 +1,5 @@
 #include "./include/main.h"
 
-#define CONVINCENT_PITCH 6
-#define PRODUCTS_BUGS    (-4)
-#define USER_TRACK       3
-#define ANGRY_INVESTOR   (-6)
-#define PITCH_FAKE_NEWS  (-8)
-
 int main(){
 
     std::vector<StartUp*> listStartUps;
@@ -67,6 +61,8 @@ int main(){
 
    StartUp* Vencedor = executeStartUpRush(listStartUps);
 
-   std::cout << Vencedor->getName() << " - " << Vencedor->getSlogan() << std::endl;
+   std::cout << " StartUp Vencedora: "<< Vencedor->getName() << " - " << Vencedor->getSlogan() << std::endl;
+
+   printPointsRanking(listStartUps);
 
 }

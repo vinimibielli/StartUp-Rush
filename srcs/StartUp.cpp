@@ -14,6 +14,7 @@ StartUp::StartUp(std::string Name, std::string Slogan, int Foundation){
     this->startupSlogan = Slogan;
     this->startupFoundation = Foundation;
     this->startupPoints = 70;
+    Events = new PossibleEvents();
 }
 
 //Funções para o Nome

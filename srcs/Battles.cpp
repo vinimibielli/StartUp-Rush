@@ -1,11 +1,17 @@
 #include "./include/Battles.h"
 
+#define CONVINCENT_PITCH 6
+#define PRODUCTS_BUGS    (-4)
+#define USER_TRACK       3
+#define ANGRY_INVESTOR   (-6)
+#define PITCH_FAKE_NEWS  (-8)
+
 void printListStartUps(std::vector<StartUp*> listStartUps){
     if(listStartUps.size() == 0){
         std::cout << "Nenhuma StartUp cadastrada." << std::endl;
     } else{
         for (int i = 0; i < listStartUps.size(); i++) {
-            std::cout << "Empresa " << i+1;
+            std::cout << "StartUp " << i+1;
             std::cout << ": Nome: " << listStartUps[i]->getName();
             std::cout << " - Slogan: " << listStartUps[i]->getSlogan();
             std::cout << " - Fundação: " << listStartUps[i]->getFoundation();
@@ -23,7 +29,33 @@ void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
 
 
 
-void printPointRanking(std::vector<StartUp*> listStartUps){
+void printPointsRanking(std::vector<StartUp*> listStartUps){
+    StartUp* aux;
+    for(int i = 0; i < listStartUps.size(); i++){
+        for(int j = i; j < listStartUps.size(); j++){
+            if(listStartUps[i]->getPoints() < listStartUps[j]->getPoints()){
+                aux = listStartUps[i];
+                listStartUps[i] = listStartUps[j];
+                listStartUps[j] = aux;
+            }
+        }
+    }
+
+    std::cout << std::endl << "---------RANKING POR PONTOS---------" << std::endl << std::endl;
+
+
+    for (int i = 0; i < listStartUps.size(); i++) {
+        std::cout << "---------StartUp " << i+1 << "----------" << std::endl;
+        std::cout << "Nome: " << listStartUps[i]->getName() << std::endl;
+        std::cout << "Slogan: " << listStartUps[i]->getSlogan() << std::endl;
+        std::cout << "Fundação: " << listStartUps[i]->getFoundation() << std::endl;
+        std::cout << "Pontos: " << listStartUps[i]->getPoints() << std::endl;
+        std::cout << "Pitchs Convincentes: " << listStartUps[i]->Events->getConvincentPitch() << std::endl;
+        std::cout << "Produtos com bugs: " << listStartUps[i]->Events->getProductsBugs() << std::endl;
+        std::cout << "Tração de usuarios: " << listStartUps[i]->Events->getUserTrack() << std::endl;
+        std::cout << "Investidores bravos: " << listStartUps[i]->Events->getAngryInvestor() << std::endl;
+        std::cout << "Fake News no Pitch: " << listStartUps[i]->Events->getPitchFakeNews() << std::endl << std::endl;
+    }
 }
 
 StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
@@ -77,15 +109,17 @@ std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartU
 }
 
 StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
-    int i, auxA, auxB = 0;
+    std::pair<bool, bool> realizeEvent;
+    int i, auxA, auxB, eventValue = 0;
+    int selectEvent, selectStartUps; 
     StartUp* Vencedor;
-    std::cout << "VAMOS PARA A BATALHA!!!!!!!!!!" << std::endl;
+    std::cout << std::endl << "-------------------------------VAMOS PARA A BATALHA!!!!!!!!!!-------------------------------------" << std::endl;
     std::cout << Battle.first->getName() << " - " << Battle.first->getPoints() << " PONTOS x " << Battle.second->getName() << " - " << Battle.second->getPoints() << " PONTOS" << std::endl;
+    std::cout << "--------------------------------------------------------------------------------------------------" << std::endl << std::endl;
 
     if(Battle.first->getPoints() == Battle.second->getPoints()){
         srand(time(0));
         i = rand() % 2;
-        std::cout << "NUMERO SORTEADO É: " << i << std::endl;
         if(i == 1){
             Vencedor = Battle.first;
         } else {
@@ -94,8 +128,7 @@ StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
 
     }
 
-    std::cout << Vencedor->getName() << " - " << Vencedor->getPoints() << std::endl;
     Vencedor->winBattlePoints();
-    std::cout << Vencedor->getName() << " - " << Vencedor->getPoints() << std::endl;
+
     return Vencedor;
 }
