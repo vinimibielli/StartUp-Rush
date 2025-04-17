@@ -5,6 +5,7 @@ StartUp::StartUp(){
     this->startupSlogan = "Slogan";
     this->startupFoundation = 0;
     this->startupPoints = 70;
+    Events = new PossibleEvents();
 }
 StartUp::~StartUp(){
     

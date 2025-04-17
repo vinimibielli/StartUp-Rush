@@ -1,11 +1,5 @@
 #include "./include/Battles.h"
 
-#define CONVINCENT_PITCH 6
-#define PRODUCTS_BUGS    (-4)
-#define USER_TRACK       3
-#define ANGRY_INVESTOR   (-6)
-#define PITCH_FAKE_NEWS  (-8)
-
 void printListStartUps(std::vector<StartUp*> listStartUps){
     if(listStartUps.size() == 0){
         std::cout << "Nenhuma StartUp cadastrada." << std::endl;
@@ -26,8 +20,6 @@ void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
             std::cout << "Batalha " << i+1 << ": " << Battles[i].first->getName() << " x " << Battles[i].second->getName() << std::endl;
         }
 }
-
-
 
 void printPointsRanking(std::vector<StartUp*> listStartUps){
     StartUp* aux;
@@ -50,11 +42,11 @@ void printPointsRanking(std::vector<StartUp*> listStartUps){
         std::cout << "Slogan: " << listStartUps[i]->getSlogan() << std::endl;
         std::cout << "Fundação: " << listStartUps[i]->getFoundation() << std::endl;
         std::cout << "Pontos: " << listStartUps[i]->getPoints() << std::endl;
-        std::cout << "Pitchs Convincentes: " << listStartUps[i]->Events->getConvincentPitch() << std::endl;
-        std::cout << "Produtos com bugs: " << listStartUps[i]->Events->getProductsBugs() << std::endl;
-        std::cout << "Tração de usuarios: " << listStartUps[i]->Events->getUserTrack() << std::endl;
-        std::cout << "Investidores bravos: " << listStartUps[i]->Events->getAngryInvestor() << std::endl;
-        std::cout << "Fake News no Pitch: " << listStartUps[i]->Events->getPitchFakeNews() << std::endl << std::endl;
+        std::cout << "Pitchs Convincentes: " << listStartUps[i]->Events->getConvincentPitch().second << std::endl;
+        std::cout << "Produtos com bugs: " << listStartUps[i]->Events->getProductsBugs().second << std::endl;
+        std::cout << "Tração de usuarios: " << listStartUps[i]->Events->getUserTrack().second << std::endl;
+        std::cout << "Investidores bravos: " << listStartUps[i]->Events->getAngryInvestor().second << std::endl;
+        std::cout << "Fake News no Pitch: " << listStartUps[i]->Events->getPitchFakeNews().second << std::endl << std::endl;
     }
 }
 
@@ -109,13 +101,94 @@ std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartU
 }
 
 StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
-    std::pair<bool, bool> realizeEvent;
-    int i, auxA, auxB, eventValue = 0;
-    int selectEvent, selectStartUps; 
+
+    PossibleEvents eventsA = *(Battle.first->Events);
+    PossibleEvents eventsB = *(Battle.second->Events);
+
+    int i, selectEvent, selectStartUps;
     StartUp* Vencedor;
     std::cout << std::endl << "-------------------------------VAMOS PARA A BATALHA!!!!!!!!!!-------------------------------------" << std::endl;
     std::cout << Battle.first->getName() << " - " << Battle.first->getPoints() << " PONTOS x " << Battle.second->getName() << " - " << Battle.second->getPoints() << " PONTOS" << std::endl;
     std::cout << "--------------------------------------------------------------------------------------------------" << std::endl << std::endl;
+
+    while(true){
+
+        std::cout << "Valor do evento: ";
+        std::cin >> selectEvent;
+
+        if(selectEvent == 1){
+            if(selectStartUps == 1){
+                eventsA.setConvincentPitch();
+            }
+            if(selectStartUps == 2){
+                eventsB.setConvincentPitch();
+            }
+            if(selectStartUps == 3){
+                eventsA.setConvincentPitch();
+                eventsB.setConvincentPitch();
+            }
+        }
+        if(selectEvent == 2){
+            if(selectStartUps == 1){
+                eventsA.setProductsBugs();
+            }
+            if(selectStartUps == 2){
+                eventsB.setProductsBugs();
+            }
+            if(selectStartUps == 3){
+                eventsA.setProductsBugs();
+                eventsB.setProductsBugs();
+            }
+        }
+        if(selectEvent == 3){
+            if(selectStartUps == 1){
+                eventsA.setUserTrack();
+            }
+            if(selectStartUps == 2){
+                eventsB.setUserTrack();
+            }
+            if(selectStartUps == 3){
+                eventsA.setUserTrack();
+                eventsB.setUserTrack();
+            }
+        }
+        if(selectEvent == 4){
+            if(selectStartUps == 1){
+                eventsA.setAngryInvestor();
+            }
+            if(selectStartUps == 2){
+                eventsB.setAngryInvestor();
+            }
+            if(selectStartUps == 3){
+                eventsA.setAngryInvestor();
+                eventsB.setAngryInvestor();
+            }
+        }
+        if(selectEvent == 5){
+            if(selectStartUps == 1){
+                eventsA.setPitchFakeNews();
+            }
+            if(selectStartUps == 2){
+                eventsB.setPitchFakeNews();
+            }
+            if(selectStartUps == 3){
+                eventsA.setPitchFakeNews();
+                eventsB.setPitchFakeNews();
+            } 
+        }
+        if(selectEvent == 6){
+            break;
+        }
+
+    }
+
+    eventsA.valueEvents();
+    eventsA.cleanBools();
+    eventsB.valueEvents();
+    eventsB.cleanBools();
+
+    *(Battle.first->Events) = eventsA;
+    *(Battle.second->Events) = eventsB;
 
     if(Battle.first->getPoints() == Battle.second->getPoints()){
         srand(time(0));

@@ -2,11 +2,20 @@
 
 PossibleEvents::PossibleEvents(){
 
-    this->convincentPitch = 0;
-    this->productsBugs = 0;
-    this->userTrack = 0;
-    this->angryInvestor = 0;
-    this->pitchFakeNews = 0;
+    this->convincentPitch.first = false;
+    this->convincentPitch.second = 0;
+
+    this->productsBugs.first = false;
+    this->productsBugs.second = 0;
+
+    this->userTrack.first = false;
+    this->userTrack.second = 0;
+
+    this->angryInvestor.first = false;
+    this->angryInvestor.second = 0;
+
+    this->pitchFakeNews.first = false;
+    this->pitchFakeNews.second = 0;
 
 }
 
@@ -15,33 +24,66 @@ PossibleEvents::~PossibleEvents(){
 }
 
 void PossibleEvents::setConvincentPitch(){
-    this->convincentPitch += 1;
+    if(!this->convincentPitch.first){this->convincentPitch.second += 1;}
+    this->convincentPitch.first = true;
 }
 void PossibleEvents::setProductsBugs(){
-    this->productsBugs += 1;
+    if(!this->productsBugs.first){this->productsBugs.second += 1;}
+    this->productsBugs.first = true;
 } 
 void PossibleEvents::setUserTrack(){
-    this->userTrack += 1;
+    if(!this->userTrack.first){this->userTrack.second += 1;}
+    this->productsBugs.first = true;
 }
 void PossibleEvents::setAngryInvestor(){
-    this->angryInvestor += 1;
+    if(!this->angryInvestor.first){this->angryInvestor.second += 1;}
+    this->productsBugs.first = true;
 }
 void PossibleEvents::setPitchFakeNews(){
-    this->pitchFakeNews += 1;
+    if(!this->pitchFakeNews.first){this->pitchFakeNews.second += 1;}
+    this->productsBugs.first = true;
 }
 
-int PossibleEvents::getConvincentPitch(){
+void PossibleEvents::cleanBools(){
+    this->convincentPitch.first = false;
+    this->productsBugs.first = false;
+    this->userTrack.first = false;
+    this->angryInvestor.first = false;
+    this->pitchFakeNews.first = false;
+}
+
+std::pair<bool, int> PossibleEvents::getConvincentPitch(){
     return this->convincentPitch;
 } 
-int PossibleEvents::getProductsBugs(){
+std::pair<bool, int> PossibleEvents::getProductsBugs(){
     return this->convincentPitch;
 } 
-int PossibleEvents::getUserTrack(){
+std::pair<bool, int> PossibleEvents::getUserTrack(){
     return this->userTrack;
 }
-int PossibleEvents::getAngryInvestor(){
+std::pair<bool, int> PossibleEvents::getAngryInvestor(){
     return this->angryInvestor;
 }
-int PossibleEvents::getPitchFakeNews(){
+std::pair<bool, int> PossibleEvents::getPitchFakeNews(){
     return this->pitchFakeNews;
+}
+
+int PossibleEvents::valueEvents(){
+    int value = 0;
+    if(this->convincentPitch.first){
+        value += CONVINCENT_PITCH;
+    }
+    if(this->productsBugs.first){
+        value += PRODUCTS_BUGS;
+    }
+    if(this->userTrack.first){
+        value += USER_TRACK;
+    }
+    if(this->angryInvestor.first){
+        value += ANGRY_INVESTOR;
+    }
+    if(this->pitchFakeNews.first){
+        value += PITCH_FAKE_NEWS;
+    }
+    return value;
 }
