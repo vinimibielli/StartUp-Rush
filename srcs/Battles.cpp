@@ -21,6 +21,11 @@ void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
         }
 }
 
+
+
+void printPointRanking(std::vector<StartUp*> listStartUps){
+}
+
 StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
     std::vector<std::pair<StartUp*, StartUp*>> Battles;
     

@@ -9,7 +9,6 @@
 int main(){
 
     std::vector<StartUp*> listStartUps;
-    std::vector<std::pair<StartUp*, StartUp*>> Battles;
     std::string Name, Slogan;
     int selectOption, Foundation;
     bool continueToBattles = false;
@@ -69,7 +68,5 @@ int main(){
    StartUp* Vencedor = executeStartUpRush(listStartUps);
 
    std::cout << Vencedor->getName() << " - " << Vencedor->getSlogan() << std::endl;
-
-   printListStartUps(listStartUps);
 
 }

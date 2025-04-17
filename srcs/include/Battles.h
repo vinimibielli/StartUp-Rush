@@ -9,14 +9,12 @@
 
 #include "StartUp.h"
 
-std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> listStartUps);
-
 void printListStartUps(std::vector<StartUp*> listStartUps);
-
-std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles);
-
-StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle);
+void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles);
 
 StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps);
+std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> listStartUps);
+std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles);
+StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle);
 
 #endif
