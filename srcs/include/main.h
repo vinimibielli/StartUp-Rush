@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 #include "StartUp.h"
-
-std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*>& listStartUps);
+#include "Battles.h"

@@ -50,3 +50,7 @@ int  StartUp::getPoints(){
 void StartUp::editPoints(int changePoints){
     this->startupPoints = this->startupPoints + (changePoints);
 }
+
+void StartUp::winBattlePoints(){
+    this->startupPoints = this->startupPoints + 30;
+}

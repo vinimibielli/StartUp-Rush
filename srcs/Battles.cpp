@@ -1,0 +1,96 @@
+#include "./include/Battles.h"
+
+void printListStartUps(std::vector<StartUp*> listStartUps){
+    if(listStartUps.size() == 0){
+        std::cout << "Nenhuma StartUp cadastrada." << std::endl;
+    } else{
+        for (int i = 0; i < listStartUps.size(); i++) {
+            std::cout << "Empresa " << i+1;
+            std::cout << ": Nome: " << listStartUps[i]->getName();
+            std::cout << " - Slogan: " << listStartUps[i]->getSlogan();
+            std::cout << " - Fundação: " << listStartUps[i]->getFoundation();
+            std::cout << " - Pontos " << listStartUps[i]->getPoints() << std::endl;
+        }
+    }
+    return;
+}
+
+void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
+        for (int i = 0; i < Battles.size(); i++) {
+            std::cout << "Batalha " << i+1 << ": " << Battles[i].first->getName() << " x " << Battles[i].second->getName() << std::endl;
+        }
+}
+
+StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
+    std::vector<std::pair<StartUp*, StartUp*>> Battles;
+    
+    while(listStartUps.size() != 1){
+        std::cout << "NUMERO DE STARTUPS: " << listStartUps.size() << std::endl;
+        Battles = randomBattles(listStartUps);
+        listStartUps = executeRoundBattles(Battles);
+    }
+
+    return listStartUps[0];
+}
+
+std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> listStartUps){
+    int i;
+    StartUp *auxFirst, *auxSecond;
+    std::vector<std::pair<StartUp*, StartUp*>> Battles;
+    std::pair<StartUp*, StartUp*> pairAux;
+    while(listStartUps.size() > 1){
+
+        srand(time(0));
+        i = rand()%(listStartUps.size()) + 0;
+        auxFirst = listStartUps[i];
+        listStartUps.erase(listStartUps.begin() + i);
+
+        i = rand()%(listStartUps.size()) + 0;
+        auxSecond = listStartUps[i];
+        Battles.push_back(std::make_pair(auxFirst, auxSecond));
+        listStartUps.erase(listStartUps.begin() + i);
+
+    }
+
+    return Battles;
+}
+
+std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
+    std::vector<StartUp*> classifiedStartUps;
+    int selectOption;
+    std::pair<StartUp*, StartUp*> Battle;
+    while(Battles.size() != 0){
+        printListBattles(Battles);
+        std::cout << "Selecione a batalha que irá ser o jurado: ";
+        std::cin >> selectOption;
+        Battle = Battles[(selectOption - 1)];
+        classifiedStartUps.push_back(executeSingleBattle(Battle));
+        Battles.erase(Battles.begin() + (selectOption - 1));
+    }
+    return classifiedStartUps;
+    
+}
+
+StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
+    int i, auxA, auxB = 0;
+    StartUp* Vencedor;
+    std::cout << "VAMOS PARA A BATALHA!!!!!!!!!!" << std::endl;
+    std::cout << Battle.first->getName() << " - " << Battle.first->getPoints() << " PONTOS x " << Battle.second->getName() << " - " << Battle.second->getPoints() << " PONTOS" << std::endl;
+
+    if(Battle.first->getPoints() == Battle.second->getPoints()){
+        srand(time(0));
+        i = rand() % 2;
+        std::cout << "NUMERO SORTEADO É: " << i << std::endl;
+        if(i == 1){
+            Vencedor = Battle.first;
+        } else {
+            Vencedor = Battle.second;
+        }
+
+    }
+
+    std::cout << Vencedor->getName() << " - " << Vencedor->getPoints() << std::endl;
+    Vencedor->winBattlePoints();
+    std::cout << Vencedor->getName() << " - " << Vencedor->getPoints() << std::endl;
+    return Vencedor;
+}

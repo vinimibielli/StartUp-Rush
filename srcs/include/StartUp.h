@@ -30,6 +30,7 @@ class StartUp{
         void setPoints(int Points);
         int  getPoints();
         void editPoints(int changePoints);
+        void winBattlePoints();
 
 };
 

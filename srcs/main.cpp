@@ -1,46 +1,75 @@
 #include "./include/main.h"
 
+#define CONVINCENT_PITCH 6
+#define PRODUCTS_BUGS    (-4)
+#define USER_TRACK       3
+#define ANGRY_INVESTOR   (-6)
+#define PITCH_FAKE_NEWS  (-8)
+
 int main(){
 
     std::vector<StartUp*> listStartUps;
     std::vector<std::pair<StartUp*, StartUp*>> Battles;
+    std::string Name, Slogan;
+    int selectOption, Foundation;
+    bool continueToBattles = false;
 
-    listStartUps.push_back(new StartUp("Dell", "Venha ser Feliz", 1953));
-    listStartUps.push_back(new StartUp("HP", "Venha ser Feliz", 1953));
-    listStartUps.push_back(new StartUp("Lenovo", "Venha ser Feliz", 1931));
-    listStartUps.push_back(new StartUp("Asus", "Venha ser Feliz", 1998));
-    listStartUps.push_back(new StartUp("Acer", "Venha ser Feliz", 1998));
-    listStartUps.push_back(new StartUp("Positivo", "Venha ser Feliz", 1998));
-    listStartUps.push_back(new StartUp("Sony", "Venha ser Feliz", 1998));
-    listStartUps.push_back(new StartUp("Avell", "Venha ser Feliz", 1998));
+    std::cout << "Cadastre as StartUps participantes!" << std::endl;
+    std::cout << "Lembre-se para realizar as disputas será necessário 4 ou 8 equipes." << std::endl;
 
-   Battles = randomBattles(listStartUps);
+    /*
+    while(!continueToBattles){
+        std::cout << "1- Cadastro de nova StartUp." << std::endl;
+        std::cout << "2- Exluir cadastro de uma StartUp." << std::endl;
+        std::cout << "3- Veja as StartUps já participantes." << std::endl;
+        std::cout << "4- Começar as disputas." << std::endl;
+        std::cin >> selectOption;
 
-    for(int i = 0; i < Battles.size(); i++){
-        std::cout << "Batalha " << i+1 << ": " << Battles[i].first->getName() << " x " << Battles[i].second->getName() << std::endl;
+        switch (selectOption)
+        {
+        case 1:
+            std::cout << "Indique o nome, slogan e ano de fundacao nesta respectiva ordem." << std::endl;
+            std::cin >> Name >> Slogan >> Foundation;
+            listStartUps.push_back(new StartUp(Name, Slogan, Foundation));
+        break;
+        case 2:
+            printListStartUps(listStartUps);
+            if(listStartUps.size() != 0){
+            std::cout << "Indique qual StartUp você quer deletar." << std::endl;
+            std::cin >> selectOption;
+            listStartUps.erase(listStartUps.begin() + (selectOption - 1));
+            }
+        break;
+        case 3:
+            printListStartUps(listStartUps);
+        break;
+        case 4:
+            if((listStartUps.size() == 4) || (listStartUps.size() == 8)){
+                continueToBattles = true;
+            } else {
+                std::cout << "Número de equipes cadastradas no momento: " << listStartUps.size() << std::endl;
+                std::cout << "Por favor, cadastre 4 ou 8 StartUps" << std::endl;
+            }
+        break;
+        default:
+            break;
+        }
     }
-}
+        */
 
+    listStartUps.push_back(new StartUp("Dell", "The power to do more", 2016));
+    listStartUps.push_back(new StartUp("HP", "Keep Reinventing", 1939));
+    listStartUps.push_back(new StartUp("Lenovo", "Smarter technology for all", 1984));
+    listStartUps.push_back(new StartUp("Asus", "In Search of Incredible", 1989));
+    listStartUps.push_back(new StartUp("Acer", "Explore beyond limits", 1974));
+    listStartUps.push_back(new StartUp("Apple", "Think different", 1976));
+    listStartUps.push_back(new StartUp("Sony", "make.believe", 1946));
+    listStartUps.push_back(new StartUp("Samsung", "Do What You Can't", 1969));
 
+   StartUp* Vencedor = executeStartUpRush(listStartUps);
 
-std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*>& listStartUps){
-    int i;
-    StartUp *auxFirst, *auxSecond;
-    std::vector<std::pair<StartUp*, StartUp*>> Battles;
-    std::pair<StartUp*, StartUp*> pairAux;
-    while(listStartUps.size() > 1){
+   std::cout << Vencedor->getName() << " - " << Vencedor->getSlogan() << std::endl;
 
-        srand(time(0));
-        i = rand()%(listStartUps.size()) + 0;
-        auxFirst = listStartUps[i];
-        listStartUps.erase(listStartUps.begin() + i);
+   printListStartUps(listStartUps);
 
-        i = rand()%(listStartUps.size()) + 0;
-        auxSecond = listStartUps[i];
-        Battles.push_back(std::make_pair(auxFirst, auxSecond));
-        listStartUps.erase(listStartUps.begin() + i);
-
-    }
-
-    return Battles;
 }
