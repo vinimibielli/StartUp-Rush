@@ -24,24 +24,38 @@ PossibleEvents::~PossibleEvents(){
 }
 
 void PossibleEvents::setConvincentPitch(){
-    if(!this->convincentPitch.first){this->convincentPitch.second += 1;}
+    if(!this->convincentPitch.first){
+        this->convincentPitch.second += 1;
+}
     this->convincentPitch.first = true;
 }
+
 void PossibleEvents::setProductsBugs(){
-    if(!this->productsBugs.first){this->productsBugs.second += 1;}
+    if(!this->productsBugs.first){
+        this->productsBugs.second += 1;
+    }
     this->productsBugs.first = true;
-} 
+}
+
 void PossibleEvents::setUserTrack(){
-    if(!this->userTrack.first){this->userTrack.second += 1;}
-    this->productsBugs.first = true;
+    if(!this->userTrack.first){
+        this->userTrack.second += 1;
+    }
+    this->userTrack.first = true;
 }
+
 void PossibleEvents::setAngryInvestor(){
-    if(!this->angryInvestor.first){this->angryInvestor.second += 1;}
-    this->productsBugs.first = true;
+    if(!this->angryInvestor.first){
+        this->angryInvestor.second += 1;
+    }
+    this->angryInvestor.first = true;
 }
+
 void PossibleEvents::setPitchFakeNews(){
-    if(!this->pitchFakeNews.first){this->pitchFakeNews.second += 1;}
-    this->productsBugs.first = true;
+    if(!this->pitchFakeNews.first){
+        this->pitchFakeNews.second += 1;
+    }
+    this->pitchFakeNews.first = true;
 }
 
 void PossibleEvents::cleanBools(){
@@ -56,7 +70,7 @@ std::pair<bool, int> PossibleEvents::getConvincentPitch(){
     return this->convincentPitch;
 } 
 std::pair<bool, int> PossibleEvents::getProductsBugs(){
-    return this->convincentPitch;
+    return this->productsBugs;
 } 
 std::pair<bool, int> PossibleEvents::getUserTrack(){
     return this->userTrack;
@@ -71,19 +85,22 @@ std::pair<bool, int> PossibleEvents::getPitchFakeNews(){
 int PossibleEvents::valueEvents(){
     int value = 0;
     if(this->convincentPitch.first){
-        value += CONVINCENT_PITCH;
+        value = value + CONVINCENT_PITCH;
     }
     if(this->productsBugs.first){
-        value += PRODUCTS_BUGS;
+        value = value + PRODUCTS_BUGS;
     }
     if(this->userTrack.first){
-        value += USER_TRACK;
+        value = value + USER_TRACK;
     }
     if(this->angryInvestor.first){
-        value += ANGRY_INVESTOR;
+        value = value + ANGRY_INVESTOR;
     }
     if(this->pitchFakeNews.first){
-        value += PITCH_FAKE_NEWS;
+        value = value + PITCH_FAKE_NEWS;
     }
+
+    std::cout << value << std::endl;
+
     return value;
 }

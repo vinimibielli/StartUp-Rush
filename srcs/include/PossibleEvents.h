@@ -7,6 +7,7 @@
 #define ANGRY_INVESTOR   (-6)
 #define PITCH_FAKE_NEWS  (-8)
 
+#include <iostream>
 #include <utility>
 
 class PossibleEvents{

@@ -68,8 +68,6 @@ std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> l
     std::vector<std::pair<StartUp*, StartUp*>> Battles;
     std::pair<StartUp*, StartUp*> pairAux;
     while(listStartUps.size() > 1){
-
-        srand(time(0));
         i = rand()%(listStartUps.size()) + 0;
         auxFirst = listStartUps[i];
         listStartUps.erase(listStartUps.begin() + i);
@@ -105,10 +103,18 @@ StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
     PossibleEvents eventsA = *(Battle.first->Events);
     PossibleEvents eventsB = *(Battle.second->Events);
 
+    std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events = {
+        {1, std::make_pair(&PossibleEvents::setConvincentPitch, &PossibleEvents::getConvincentPitch)},
+        {2, std::make_pair(&PossibleEvents::setProductsBugs, &PossibleEvents::getProductsBugs)},
+        {3, std::make_pair(&PossibleEvents::setUserTrack, &PossibleEvents::getUserTrack)},
+        {4, std::make_pair(&PossibleEvents::setAngryInvestor, &PossibleEvents::getAngryInvestor)},
+        {5, std::make_pair(&PossibleEvents::setPitchFakeNews, &PossibleEvents::getPitchFakeNews)},
+    };
+
     int i, selectEvent, selectStartUps;
     StartUp* Vencedor;
     std::cout << std::endl << "-------------------------------VAMOS PARA A BATALHA!!!!!!!!!!-------------------------------------" << std::endl;
-    std::cout << Battle.first->getName() << " - " << Battle.first->getPoints() << " PONTOS x " << Battle.second->getName() << " - " << Battle.second->getPoints() << " PONTOS" << std::endl;
+    std::cout << "                           " << Battle.first->getName() << " - " << Battle.first->getPoints() << " PONTOS x " << Battle.second->getName() << " - " << Battle.second->getPoints() << " PONTOS" << std::endl;
     std::cout << "--------------------------------------------------------------------------------------------------" << std::endl << std::endl;
 
     while(true){
@@ -116,82 +122,79 @@ StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
         std::cout << "Valor do evento: ";
         std::cin >> selectEvent;
 
-        if(selectEvent == 1){
-            if(selectStartUps == 1){
-                eventsA.setConvincentPitch();
-            }
-            if(selectStartUps == 2){
-                eventsB.setConvincentPitch();
-            }
-            if(selectStartUps == 3){
-                eventsA.setConvincentPitch();
-                eventsB.setConvincentPitch();
-            }
-        }
-        if(selectEvent == 2){
-            if(selectStartUps == 1){
-                eventsA.setProductsBugs();
-            }
-            if(selectStartUps == 2){
-                eventsB.setProductsBugs();
-            }
-            if(selectStartUps == 3){
-                eventsA.setProductsBugs();
-                eventsB.setProductsBugs();
-            }
-        }
-        if(selectEvent == 3){
-            if(selectStartUps == 1){
-                eventsA.setUserTrack();
-            }
-            if(selectStartUps == 2){
-                eventsB.setUserTrack();
-            }
-            if(selectStartUps == 3){
-                eventsA.setUserTrack();
-                eventsB.setUserTrack();
-            }
-        }
-        if(selectEvent == 4){
-            if(selectStartUps == 1){
-                eventsA.setAngryInvestor();
-            }
-            if(selectStartUps == 2){
-                eventsB.setAngryInvestor();
-            }
-            if(selectStartUps == 3){
-                eventsA.setAngryInvestor();
-                eventsB.setAngryInvestor();
-            }
-        }
-        if(selectEvent == 5){
-            if(selectStartUps == 1){
-                eventsA.setPitchFakeNews();
-            }
-            if(selectStartUps == 2){
-                eventsB.setPitchFakeNews();
-            }
-            if(selectStartUps == 3){
-                eventsA.setPitchFakeNews();
-                eventsB.setPitchFakeNews();
-            } 
-        }
         if(selectEvent == 6){
             break;
         }
 
+        if(events.find(selectEvent) != events.end()){
+            
+            std::cout << "Marque a opção desejada: " << std::endl;
+
+            if(!(events[selectEvent].second(eventsA).first) && (!(events[selectEvent].second(eventsB).first))){
+                std::cout << "1- " << Battle.first->getName() << std::endl
+                          << "2- " << Battle.second->getName() << std::endl
+                          << "3- Ambas as startups" << std::endl;
+            } else {
+                if(!(events[selectEvent].second(eventsA).first)){
+                    std::cout << "1- Apenas a startup " << Battle.first->getName() << " esta disponivel" << std::endl;
+                }
+                else if(!(events[selectEvent].second(eventsB).first)){
+                    std::cout << "1- Apenas a startup " << Battle.second->getName() << " esta disponivel" << std::endl;
+                }
+                else {
+                    std::cout << "Nenhuma startup esta disponivel para este evento" << std::endl;
+                    continue;
+                }
+            }
+
+            std::cin >> selectStartUps;
+
+            if(selectStartUps == 1){
+                if(!(events[selectEvent].second(eventsA).first)){
+                    events[selectEvent].first(eventsA);
+                } else{
+                    events[selectEvent].first(eventsB);
+                } 
+
+            }
+            if(selectStartUps == 2){
+                events[selectEvent].first(eventsB); 
+            }
+            if(selectStartUps == 3){
+                events[selectEvent].first(eventsA);
+                events[selectEvent].first(eventsB); 
+            }
+            if(selectStartUps < 1 || selectStartUps > 3){
+                std::cout << "Valor inválido, por favor insira apenas os valores possíveis." << std::endl;
+            }
+        } else{
+            std::cout << "Nenhuma atividade esta disponivel para este evento" << std::endl;
+            continue;
+        }
+
+        //std::cout << "Nome: " << Battle.first->getName() << " Convincent Pitch: " << eventsA.getConvincentPitch().first << " Product Bugs: " << eventsA.getProductsBugs().first << " User Track: " << eventsA.getUserTrack().first << " Angry Investor: " << eventsA.getAngryInvestor().first << " Fake News Pitch: " << eventsA.getPitchFakeNews().first << std::endl;
+        //std::cout << "Nome: " << Battle.second->getName() << " Convincent Pitch: " << eventsB.getConvincentPitch().first << " Product Bugs: " << eventsB.getProductsBugs().first << " User Track: " << eventsB.getUserTrack().first << " Angry Investor: " << eventsB.getAngryInvestor().first << " Fake News Pitch: " << eventsB.getPitchFakeNews().first << std::endl;
+        
+
     }
 
-    eventsA.valueEvents();
+    Battle.first->editPoints(eventsA.valueEvents());
+    Battle.second->editPoints(eventsB.valueEvents());
+
     eventsA.cleanBools();
-    eventsB.valueEvents();
     eventsB.cleanBools();
 
     *(Battle.first->Events) = eventsA;
     *(Battle.second->Events) = eventsB;
 
-    if(Battle.first->getPoints() == Battle.second->getPoints()){
-        srand(time(0));
+    std::cout << "Nome: " << Battle.first->getName() << " Pontos: " << Battle.first->getPoints() << std::endl;
+    std::cout << "Nome: " << Battle.second->getName() << " Pontos: " << Battle.second->getPoints() << std::endl;
+
+    if(Battle.first->getPoints() > Battle.second->getPoints()){
+        Vencedor = Battle.first;
+    } else if(Battle.first->getPoints() < Battle.second->getPoints()){
+        Vencedor = Battle.second; 
+    } else {
         i = rand() % 2;
         if(i == 1){
             Vencedor = Battle.first;
@@ -200,6 +203,7 @@ StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle){
         }
 
     }
+
 
     Vencedor->winBattlePoints();
 

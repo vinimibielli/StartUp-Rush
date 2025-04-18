@@ -2,6 +2,7 @@
 
 int main(){
 
+    srand(time(0));
     std::vector<StartUp*> listStartUps;
     std::string Name, Slogan;
     int selectOption, Foundation;

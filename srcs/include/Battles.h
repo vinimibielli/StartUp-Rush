@@ -6,6 +6,8 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <unordered_map>
+#include <functional>
 
 #include "StartUp.h"
 
