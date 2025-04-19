@@ -153,7 +153,7 @@ CROW_ROUTE(app, "/random_battles").methods("POST"_method)([&listStartUps, &listB
 
 //-------------------------------------CONFRONTOS-----------------------------------------------------------
 
-CROW_ROUTE(app, "avaliables_battles").methods("GET"_method)([&listBattles](const crow::request& req) {
+CROW_ROUTE(app, "/avaliables_battles").methods("GET"_method)([&listBattles](const crow::request& req) {
     
     json battlesAvaliables = json::array();
     
@@ -161,14 +161,7 @@ CROW_ROUTE(app, "avaliables_battles").methods("GET"_method)([&listBattles](const
         battlesAvaliables.push_back({{"battle", aux.first},{{"name", aux.second.first->getName()}, {"name", aux.second.second->getName()}}});
     }
 
-    return crow::response(battlesAvaliables.dump(4));
-
-});
-
-CROW_ROUTE(app, "single_battle/<int>").methods("POST"_method)([&listBattles, &battle](const crow::request& req, int id) {
-    
-    *battle = (*listBattles)[id];    
-    
+    return crow::response(battlesAvaliables.dump(4)); 
 
 });
 
@@ -176,7 +169,7 @@ CROW_ROUTE(app, "single_battle/<int>").methods("POST"_method)([&listBattles, &ba
 
 //-------------------------------------EVENTOS-----------------------------------------------------------
 
-CROW_ROUTE(app, "avaliables_events").methods("GET"_method)([](const crow::request& req) {
+CROW_ROUTE(app, "/avaliables_events/<int>").methods("GET"_method)([](const crow::request& req, int idBattle) {
     
     json eventsAvaliables = {
         {{"id", 1},{"Convincent Pitch"}},
@@ -189,7 +182,7 @@ CROW_ROUTE(app, "avaliables_events").methods("GET"_method)([](const crow::reques
     return crow::response(eventsAvaliables.dump(4));
 });
 
-CROW_ROUTE(app, "avaliables_startups/").methods("GET"_method)([&battle, &events](const crow::request& req, int id) {
+CROW_ROUTE(app, "/avaliables_startups").methods("GET"_method)([&battle, &events](const crow::request& req, int id) {
 
     PossibleEvents eventsA = *(battle->first->Events);
     PossibleEvents eventsB = *(battle->second->Events);
@@ -224,7 +217,7 @@ CROW_ROUTE(app, "avaliables_startups/").methods("GET"_method)([&battle, &events]
     return crow::response(messageOption.dump(4));
 });
 
-CROW_ROUTE(app, "avaliables_startups/").methods("POST"_method)([&battle, &events](const crow::request& req, int id) {
+CROW_ROUTE(app, "/avaliables_startups ").methods("POST"_method)([&battle, &events](const crow::request& req, int id) {
 
     PossibleEvents eventsA = *(battle->first->Events);
     PossibleEvents eventsB = *(battle->second->Events);
