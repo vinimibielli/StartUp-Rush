@@ -1,6 +1,6 @@
 TARGET = main.bin
 
-SRCDIR = srcs
+SRCDIR = backend/srcs
 INCLUDEDIR = $(SRCDIR)/include
 
 SOURCE = $(wildcard $(SRCDIR)/*.cpp)

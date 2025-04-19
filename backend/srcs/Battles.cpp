@@ -21,7 +21,7 @@ void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
         }
 }
 
-void printPointsRanking(std::vector<StartUp*> listStartUps){
+std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps){
     StartUp* aux;
     for(int i = 0; i < listStartUps.size(); i++){
         for(int j = i; j < listStartUps.size(); j++){
@@ -33,40 +33,24 @@ void printPointsRanking(std::vector<StartUp*> listStartUps){
         }
     }
 
-    std::cout << std::endl << "---------RANKING POR PONTOS---------" << std::endl << std::endl;
-
-
-    for (int i = 0; i < listStartUps.size(); i++) {
-        std::cout << "---------StartUp " << i+1 << "----------" << std::endl;
-        std::cout << "Nome: " << listStartUps[i]->getName() << std::endl;
-        std::cout << "Slogan: " << listStartUps[i]->getSlogan() << std::endl;
-        std::cout << "Fundação: " << listStartUps[i]->getFoundation() << std::endl;
-        std::cout << "Pontos: " << listStartUps[i]->getPoints() << std::endl;
-        std::cout << "Pitchs Convincentes: " << listStartUps[i]->Events->getConvincentPitch().second << std::endl;
-        std::cout << "Produtos com bugs: " << listStartUps[i]->Events->getProductsBugs().second << std::endl;
-        std::cout << "Tração de usuarios: " << listStartUps[i]->Events->getUserTrack().second << std::endl;
-        std::cout << "Investidores bravos: " << listStartUps[i]->Events->getAngryInvestor().second << std::endl;
-        std::cout << "Fake News no Pitch: " << listStartUps[i]->Events->getPitchFakeNews().second << std::endl << std::endl;
-    }
+    return listStartUps;
 }
 
 StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
     std::vector<std::pair<StartUp*, StartUp*>> Battles;
     
     while(listStartUps.size() != 1){
-        std::cout << "NUMERO DE STARTUPS: " << listStartUps.size() << std::endl;
-        Battles = randomBattles(listStartUps);
+        //Battles = randomBattles(listStartUps);
         listStartUps = executeRoundBattles(Battles);
     }
 
     return listStartUps[0];
 }
 
-std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> listStartUps){
+std::unordered_map<int, std::pair<StartUp*, StartUp*>>* randomBattles(std::vector<StartUp*> listStartUps){
     int i;
     StartUp *auxFirst, *auxSecond;
-    std::vector<std::pair<StartUp*, StartUp*>> Battles;
-    std::pair<StartUp*, StartUp*> pairAux;
+    std::unordered_map<int, std::pair<StartUp*, StartUp*>>* Battles;
     while(listStartUps.size() > 1){
         i = rand()%(listStartUps.size()) + 0;
         auxFirst = listStartUps[i];
@@ -74,7 +58,8 @@ std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> l
 
         i = rand()%(listStartUps.size()) + 0;
         auxSecond = listStartUps[i];
-        Battles.push_back(std::make_pair(auxFirst, auxSecond));
+
+        Battles->insert(std::make_pair(Battles->size(), std::make_pair(auxFirst, auxSecond)));
         listStartUps.erase(listStartUps.begin() + i);
 
     }

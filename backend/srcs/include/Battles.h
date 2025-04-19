@@ -13,13 +13,14 @@
 
 void printListStartUps(std::vector<StartUp*> listStartUps);
 void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles);
-void printPointsRanking(std::vector<StartUp*> listStartUps);
+
+
+std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps);
+std::unordered_map<int, std::pair<StartUp*, StartUp*>>* randomBattles(std::vector<StartUp*> listStartUps);
+std::pair<bool, bool> checkEvents(std::pair<StartUp*, StartUp*> Battle, int selectEvent);
 
 StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps);
-std::vector<std::pair<StartUp*, StartUp*>> randomBattles(std::vector<StartUp*> listStartUps);
 std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles);
 StartUp* executeSingleBattle(std::pair<StartUp*, StartUp*> Battle);
-
-std::pair<bool, bool> checkEvents(std::pair<StartUp*, StartUp*> Battle, int selectEvent);
 
 #endif
