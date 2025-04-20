@@ -1,4 +1,4 @@
-#include "./include/Battles.h"
+#include "./include/utils.h"
 
 void printListStartUps(std::vector<StartUp*> listStartUps){
     if(listStartUps.size() == 0){
@@ -47,19 +47,24 @@ StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
     return listStartUps[0];
 }
 
-std::unordered_map<int, std::pair<StartUp*, StartUp*>>* randomBattles(std::vector<StartUp*> listStartUps){
+std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps){
     int i;
+    int ID = 0;
     StartUp *auxFirst, *auxSecond;
-    std::unordered_map<int, std::pair<StartUp*, StartUp*>>* Battles;
+    Battle* battle = new Battle();
+    std::vector<Battle*>* Battles;
     while(listStartUps.size() > 1){
+        battle->setID(ID);
+
         i = rand()%(listStartUps.size()) + 0;
-        auxFirst = listStartUps[i];
+        battle->setStartUpA(listStartUps[i]);
         listStartUps.erase(listStartUps.begin() + i);
 
         i = rand()%(listStartUps.size()) + 0;
-        auxSecond = listStartUps[i];
+        battle->setStartUpA(listStartUps[i]);
 
-        Battles->insert(std::make_pair(Battles->size(), std::make_pair(auxFirst, auxSecond)));
+
+        Battles->push_back(battle);
         listStartUps.erase(listStartUps.begin() + i);
 
     }

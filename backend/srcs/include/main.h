@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "StartUp.h"
-#include "Battles.h"
+#include "utils.h"
+#include "Battle.h"
 #include "crow.h"
 #include "json.hpp"

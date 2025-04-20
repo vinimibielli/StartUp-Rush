@@ -12,9 +12,9 @@ int main(){
 
     std::unordered_set<std::string> nameStartUps;
     std::vector<StartUp*> listStartUps;
-
-    std::unordered_map<int, std::pair<StartUp*, StartUp*>>* listBattles;
-    std::pair<StartUp*, StartUp*>* battle;
+    std::vector<StartUp*>* classifiedStartUps;
+    
+    std::vector<Battle*>* listBattles;
 
     std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events = {
         {1, std::make_pair(&PossibleEvents::setConvincentPitch, &PossibleEvents::getConvincentPitch)},
@@ -118,30 +118,19 @@ int main(){
         return crow::response(startupsJSON.dump(4));
 });
 
-CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps](const crow::request& req) {
+CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps, &listBattles](const crow::request& req) {
     
     if((listStartUps.size() != 4) && (listStartUps.size() != 8)){
         return crow::response(400, "Erro ao iniciar o StartUpRush, por favor inclua a quantidade correta de participantes.");
-    }
+    } 
     
-    return crow::response(); //FINALIZAR ISSO
-
-});
-
-//--------------------------------------------------------------------------------------------------------
-
-//-------------------------------------SORTEIO-----------------------------------------------------------
-
-CROW_ROUTE(app, "/random_battles").methods("POST"_method)([&listStartUps, &listBattles](const crow::request& req) {
-    
-    listBattles->clear();
     listBattles = randomBattles(listStartUps);
 
     json battlesJson = json::array();
     for(const auto aux : *listBattles){
         battlesJson.push_back({
-            {"startup 1", {"name", aux.second.first->getName()}},
-            {"startup 2", {"name", aux.second.second->getName()}}
+            {"startup 1", {"name", aux->getStartUpA()->getName()}},
+            {"startup 2", {"name", aux->getStartUpB()->getName()}}
     });
     }
 
@@ -153,15 +142,21 @@ CROW_ROUTE(app, "/random_battles").methods("POST"_method)([&listStartUps, &listB
 
 //-------------------------------------CONFRONTOS-----------------------------------------------------------
 
-CROW_ROUTE(app, "/avaliables_battles").methods("GET"_method)([&listBattles](const crow::request& req) {
+CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::request& req) {
     
     json battlesAvaliables = json::array();
     
     for(const auto aux : *listBattles){
-        battlesAvaliables.push_back({{"battle", aux.first},{{"name", aux.second.first->getName()}, {"name", aux.second.second->getName()}}});
+        battlesAvaliables.push_back({{"battle", aux->getID()},{{"name", aux->getStartUpA()->getName()}, {"name", aux->getStartUpB()->getName()}}});
     }
 
     return crow::response(battlesAvaliables.dump(4)); 
+
+});
+
+CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles](const crow::request& req, int idBattle) {
+    
+//SÓ FALTA FAZER A PARTE DE FINALIZAR A RODADA E DEPOIS IR PARA O JAVA SCRIPT    
 
 });
 
@@ -169,7 +164,7 @@ CROW_ROUTE(app, "/avaliables_battles").methods("GET"_method)([&listBattles](cons
 
 //-------------------------------------EVENTOS-----------------------------------------------------------
 
-CROW_ROUTE(app, "/avaliables_events/<int>").methods("GET"_method)([](const crow::request& req, int idBattle) {
+CROW_ROUTE(app, "/battle/<int>/events").methods("GET"_method)([](const crow::request& req, int idBattle) {
     
     json eventsAvaliables = {
         {{"id", 1},{"Convincent Pitch"}},
@@ -182,31 +177,36 @@ CROW_ROUTE(app, "/avaliables_events/<int>").methods("GET"_method)([](const crow:
     return crow::response(eventsAvaliables.dump(4));
 });
 
-CROW_ROUTE(app, "/avaliables_startups").methods("GET"_method)([&battle, &events](const crow::request& req, int id) {
+CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("GET"_method)([&listBattles, &events](const crow::request& req, int idBattle, int idEvent) {
 
-    PossibleEvents eventsA = *(battle->first->Events);
-    PossibleEvents eventsB = *(battle->second->Events);
+    Battle* battle = (*listBattles)[idEvent];
+    PossibleEvents eventsA = *(battle->getStartUpA()->Events);
+    PossibleEvents eventsB = *(battle->getStartUpB()->Events);
 
     json messageOption;
 
-    if(events.find(id) != events.end()){
+    if(events.find(idEvent) != events.end()){
 
-        if(!(events[id].second(eventsA).first) && (!(events[id].second(eventsB).first))){
+        if(!(events[idEvent].second(eventsA).first) && (!(events[idEvent].second(eventsB).first))){
             messageOption = {
-                {"name", battle->first->getName()},
-                {"name", battle->second->getName()},
-                {"name", "Ambas"}
+                {{"avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                {{"avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                {{"avaliable"}, {"name", "Ambas"}}
             };
         
         } else {
-            if(!(events[id].second(eventsA).first)){
+            if(!(events[idEvent].second(eventsA).first)){
                 messageOption = {
-                    {"name", battle->first->getName()},
+                    {{"avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"not avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"not avaliable"}, {"name", "Ambas"}}
                 };
             }
-            else if(!(events[id].second(eventsB).first)){
-                messageOption = {
-                    {"name", battle->second->getName()},
+            else if(!(events[idEvent].second(eventsB).first)){
+                messageOption = {     
+                    {{"not avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"not avaliable"}, {"name", "Ambas"}}
                 };
             }
             else {
@@ -217,71 +217,78 @@ CROW_ROUTE(app, "/avaliables_startups").methods("GET"_method)([&battle, &events]
     return crow::response(messageOption.dump(4));
 });
 
-CROW_ROUTE(app, "/avaliables_startups ").methods("POST"_method)([&battle, &events](const crow::request& req, int id) {
+CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("POST"_method)([&listBattles, &events](const crow::request& req, int idBattle, int idEvent) {
 
-    PossibleEvents eventsA = *(battle->first->Events);
-    PossibleEvents eventsB = *(battle->second->Events);
+    Battle* battle = (*listBattles)[idEvent];
+    PossibleEvents eventsA = *(battle->getStartUpA()->Events);
+    PossibleEvents eventsB = *(battle->getStartUpB()->Events);
 
-    auto dados = json::parse(req.body);
+    auto option = json::parse(req.body);
 
-    json messageOption;
+    std::string stringOption = option["name"];
 
-    if(dados == 1){
-        if(!(events[id].second(eventsA).first)){
-            events[id].first(eventsA);
-        } else{
-            events[id].first(eventsB);
-        } 
-
-    }
-    if(dados == 2){
-        events[id].first(eventsB); 
-    }
-    if(dados == 3){
-        events[id].first(eventsA);
-        events[id].first(eventsB); 
-    }
-    if(dados < 1 || dados > 3){
-        return crow::response("Valor inválido, por favor insira apenas os valores possíveis.");
+    if("name" == "usuarioA"){
+        events[idEvent].first(eventsA);
+    } else if("name" == "usuarioB"){
+        events[idEvent].first(eventsB);
+    } else{
+        events[idEvent].first(eventsA);
+        events[idEvent].first(eventsB);
     }
 
-    return crow::response();
+    std::string location = "/battle/" + std::to_string(idBattle) + "/events";
+
+    json resposta = {
+        {"next", location}
+    };
+
+    return crow::response(200, resposta);
+
 });
+
+//--------------------------------------------------------------------------------------------------------
+
+//-------------------------------------FINAL--------------------------------------------------------------
+
+CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classifiedStartUps](const crow::request& req, int idBattle) {
+
+    StartUp* Vencedor = (*classifiedStartUps)[0];
+    
+    json vencedorJSON = {
+        {"name", Vencedor->getName()},
+        {"slogan", Vencedor->getSlogan()}
+    };
+
+    std::vector<StartUp*> ordeningList = ordeningPointsRanking(listStartUps);
+
+    json startupsJSON = json::array();
+
+    for(int i = 0; i < ordeningList.size(); i++){
+        startupsJSON.push_back({
+            {"name", ordeningList[i]->getName()},
+            {"slogan", ordeningList[i]->getSlogan()},
+            {"foundation", ordeningList[i]->getFoundation()},
+            {"points", ordeningList[i]->getPoints()},
+            {"convincent pitch", ordeningList[i]->Events->getConvincentPitch()},
+            {"product bugs", ordeningList[i]->Events->getProductsBugs()},
+            {"user track", ordeningList[i]->Events->getUserTrack()},
+            {"angry investor", ordeningList[i]->Events->getAngryInvestor()},
+            {"fake new pitch", ordeningList[i]->Events->getPitchFakeNews()}
+        });
+    }
+
+    json resposta = {
+        {"vencedor", vencedorJSON},
+        {"points ranking", startupsJSON}
+    };
+
+    return crow::response(vencedorJSON.dump());
+});
+
+//--------------------------------------------------------------------------------------------------------
+
+
 
 app.port(8080).multithreaded().run();
 
 }
-/*
-StartUp* Vencedor = executeStartUpRush(listStartUps);
-
-        json vencedorJSON = {
-            {"name", Vencedor->getName()},
-            {"slogan", Vencedor->getSlogan()}
-        };
-
-        std::vector<StartUp*> ordeningList = ordeningPointsRanking(listStartUps);
-
-        json startupsJSON = json::array();
-
-        for(int i = 0; i < listStartUps.size(); i++){
-            startupsJSON.push_back({
-                {"name", listStartUps[i]->getName()},
-                {"slogan", listStartUps[i]->getSlogan()},
-                {"foundation", listStartUps[i]->getFoundation()},
-                {"points", listStartUps[i]->getPoints()},
-                {"convincent pitch", listStartUps[i]->Events->getConvincentPitch()},
-                {"product bugs", listStartUps[i]->Events->getProductsBugs()},
-                {"user track", listStartUps[i]->Events->getUserTrack()},
-                {"angry investor", listStartUps[i]->Events->getAngryInvestor()},
-                {"fake new pitch", listStartUps[i]->Events->getPitchFakeNews()}
-            });
-        }
-
-        json resposta = {
-            {"vencedor", vencedorJSON},
-            {"points ranking", startupsJSON}
-        };
-
-        return crow::response(vencedorJSON.dump());
-
-    }*/
