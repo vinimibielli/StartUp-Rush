@@ -154,28 +154,59 @@ CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::req
 
 });
 
-CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles](const crow::request& req, int idBattle) {
+CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, , &classifiedStartUps](const crow::request& req, int idBattle) {
     
-//SÓ FALTA FAZER A PARTE DE FINALIZAR A RODADA E DEPOIS IR PARA O JAVA SCRIPT
+    json resposta;
 
     Battle* battle = (*listBattles)[idEvent];
     battle->setFinalized();
     
-    PossibleEvents* eventsA = *(battle->getStartUpA()->Events);
-    PossibleEvents* eventsB = *(battle->(&getStartUpB()->Events)); // ver se isso está certo e mudar no outro também
+    PossibleEvents& eventsA = battle->getStartUpA().Events;
+    PossibleEvents& eventsB = battle->getStartUpB().Events;
 
-    Battle.first->editPoints(eventsA.valueEvents());
-    Battle.second->editPoints(eventsB.valueEvents());
+    StartUp* Vencedor;
+
+    battle->getStarUpA()->editPoints(eventsA.valueEvents());
+    battle->getStarUpB()->editPoints(eventsB.valueEvents());
 
     eventsA.cleanBools();
     eventsB.cleanBools();
 
-    *(Battle.first->Events) = eventsA;
-    *(Battle.second->Events) = eventsB;
+    if(battle->getStarUpA()->getPoints() > battle->getStarUpB()->getPoints()){
+        Vencedor = battle->getStarUpA();
+    } else if(battle->getStarUpA()->getPoints() < battle->getStarUpB()->getPoints()){
+        Vencedor = battle->getStarUpB(); 
+    } else {
+        int i = rand() % 2;
+        if(i == 1){
+            Vencedor = battle->getStarUpA();
+        } else {
+            Vencedor = battle->getStarUpB();
+        }
 
-    event
+    }
     
+    Vencedor->winBattlePoints();
+    classifiedStartUps->push_back(Vencedor);
+
+    for(const auto aux : *listBattles){
+        if(aux->getFinalized() == false && (listBattles->size() > 1)){
+            resposta = {{"next", "/battles"}};
+            return crow::response(200, resposta);
+        } else{
+            resposta = {{"next", "/final_results"}};
+            return crow::response(200, resposta);
+    }
+
+    for (Class* ptr : vetor) {
+        delete ptr; // desaloca o objeto apontado
+    }
     
+    listBattles = randomBattles(listStartUps);
+    classifiedStartUps.clear();
+
+    resposta = {{"next", "/battles"}};
+    return crow::response(200, resposta);
 
 });
 
