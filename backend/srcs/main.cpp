@@ -50,7 +50,7 @@ int main(){
             </html>
         )";
 
-        return crow::response(html);
+        return crow::response("index.html");
     });
 
 
@@ -60,7 +60,7 @@ int main(){
             auto dados = json::parse(req.body);
 
             if(!dados.contains("name") || !dados.contains("slogan") || !dados.contains("foundation")){
-                return crow::response(400, "Dados inválidos");
+                return createJSON(400, "Dados inválidos");
             }
 
             std::string startupName = dados["name"];
@@ -70,15 +70,15 @@ int main(){
             if(nameStartUps.find(startupName) == nameStartUps.end()){
                 nameStartUps.insert(startupName);
                 listStartUps.push_back(new StartUp(startupName, startupSlogan, startupFoundation));
-                return crow::response(200, "A startUp foi adicionada!"); 
+                return createJSON(201, "A startUp foi adicionada!", "/");
             } else{
-                return crow::response(500, "StartUp já existente."); 
+                return createJSON(400, "StartUp já existente.");
             }
 
         } catch (const nlohmann::json::exception& e) {
-            return crow::response(400, "Erro no JSON.");
+            return createJSON(500, "Erro no JSON");
         } catch(...){
-            return crow::response(500, "Erro ao adicionar a StartUp.");
+            return createJSON(500, "Erro ao adicionar a StartUp.");
         }
         
     });
@@ -96,10 +96,10 @@ int main(){
                         break;
                     }
                 }
-                return crow::response(200, "A startUp foi removida!");
+                return createJSON(200, "A startUp foi removida!", "/");
             }
             else{
-                return crow::response(500, "StartUp não foi encontrada.");
+                return createJSON(404, "StartUp não foi encontrada.");
             }
     });
 
@@ -126,16 +126,8 @@ CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps, &listBat
     
     listBattles = randomBattles(listStartUps);
 
-    json battlesJson = json::array();
-    for(const auto aux : *listBattles){
-        battlesJson.push_back({
-            {"startup 1", {"name", aux->getStartUpA()->getName()}},
-            {"startup 2", {"name", aux->getStartUpB()->getName()}}
-    });
-    }
-
-    return crow::response(battlesJson.dump(4));
-
+    return createJSON(200, "Batalhas iniciadas com sucesso", "/battles");
+    
 });
 
 //--------------------------------------------------------------------------------------------------------
@@ -156,8 +148,6 @@ CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::req
 
 CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, , &classifiedStartUps](const crow::request& req, int idBattle) {
     
-    json resposta;
-
     Battle* battle = (*listBattles)[idEvent];
     battle->setFinalized();
     
@@ -191,11 +181,11 @@ CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, 
 
     for(const auto aux : *listBattles){
         if(aux->getFinalized() == false && (listBattles->size() > 1)){
-            resposta = {{"next", "/battles"}};
-            return crow::response(200, resposta);
+            return createJSON(200, "Ainda restam batalhas.", "/battles");
         } else{
             resposta = {{"next", "/final_results"}};
             return crow::response(200, resposta);
+            return createJSON(200, "O vencedor foi determinado!", "/final_results");
     }
 
     for (Class* ptr : vetor) {
@@ -204,9 +194,8 @@ CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, 
     
     listBattles = randomBattles(listStartUps);
     classifiedStartUps.clear();
-
-    resposta = {{"next", "/battles"}};
-    return crow::response(200, resposta);
+        
+    return createJSON(200, "Novas batalhas foram sorteadas.", "/battles");
 
 });
 
@@ -247,20 +236,20 @@ CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("GET"_method)([&list
         } else {
             if(!(events[idEvent].second(eventsA).first)){
                 messageOption = {
-                    {{"avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                    {{"not avaliable"}, {"name", battle->getStartUpB()->getName()}},
-                    {{"not avaliable"}, {"name", "Ambas"}}
+                    {{"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"status", "not avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"status", "not avaliable"}, {"name", "Ambas"}}
                 };
             }
             else if(!(events[idEvent].second(eventsB).first)){
                 messageOption = {     
-                    {{"not avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                    {{"avaliable"}, {"name", battle->getStartUpB()->getName()}},
-                    {{"not avaliable"}, {"name", "Ambas"}}
+                    {{"status", "not avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"status", "not avaliable"}, {"name", "Ambas"}}
                 };
             }
             else {
-                return crow::response("Nenhuma opção disponível");
+                return createJSON(204, "Nenhuma opção disponível");
             }
         }
     }
@@ -287,12 +276,8 @@ CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("POST"_method)([&lis
     }
 
     std::string location = "/battle/" + std::to_string(idBattle) + "/events";
-
-    json resposta = {
-        {"next", location}
-    };
-
-    return crow::response(200, resposta);
+    eturn createJSON(200, "Evento realizado.", location);
+    
 
 });
 
@@ -342,3 +327,12 @@ CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classif
 app.port(8080).multithreaded().run();
 
 }
+
+crow::response createJSON(int status, std::string message, std::string next)
+    json resposta;
+    resposta["message"] = message;
+    if(!next.empty()){
+        resposta["next"] = next;
+    }
+
+    return crow::response(status, resposta.dump(4);
