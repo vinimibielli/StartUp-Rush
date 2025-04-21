@@ -2,8 +2,6 @@
 
 using json = nlohmann::json;
 
-
-
 int main(){
 
     srand(time(0));
@@ -328,7 +326,7 @@ app.port(8080).multithreaded().run();
 
 }
 
-crow::response createJSON(int status, std::string message, std::string next)
+crow::response createJSON(int status, std::string message, std::string next){
     json resposta;
     resposta["message"] = message;
     if(!next.empty()){
@@ -336,3 +334,4 @@ crow::response createJSON(int status, std::string message, std::string next)
     }
 
     return crow::response(status, resposta.dump(4);
+}
