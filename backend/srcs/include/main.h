@@ -11,3 +11,5 @@
 #include "Battle.h"
 #include "crow.h"
 #include "json.hpp"
+
+crow::response createJSON(int status, std::string message, std::string next);
