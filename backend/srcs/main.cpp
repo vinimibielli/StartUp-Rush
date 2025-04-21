@@ -156,7 +156,26 @@ CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::req
 
 CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles](const crow::request& req, int idBattle) {
     
-//SÓ FALTA FAZER A PARTE DE FINALIZAR A RODADA E DEPOIS IR PARA O JAVA SCRIPT    
+//SÓ FALTA FAZER A PARTE DE FINALIZAR A RODADA E DEPOIS IR PARA O JAVA SCRIPT
+
+    Battle* battle = (*listBattles)[idEvent];
+    battle->setFinalized();
+    
+    PossibleEvents* eventsA = *(battle->getStartUpA()->Events);
+    PossibleEvents* eventsB = *(battle->(&getStartUpB()->Events)); // ver se isso está certo e mudar no outro também
+
+    Battle.first->editPoints(eventsA.valueEvents());
+    Battle.second->editPoints(eventsB.valueEvents());
+
+    eventsA.cleanBools();
+    eventsB.cleanBools();
+
+    *(Battle.first->Events) = eventsA;
+    *(Battle.second->Events) = eventsB;
+
+    event
+    
+    
 
 });
 
@@ -220,8 +239,8 @@ CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("GET"_method)([&list
 CROW_ROUTE(app, "/battle/<int>/event/<int>/target").methods("POST"_method)([&listBattles, &events](const crow::request& req, int idBattle, int idEvent) {
 
     Battle* battle = (*listBattles)[idEvent];
-    PossibleEvents eventsA = *(battle->getStartUpA()->Events);
-    PossibleEvents eventsB = *(battle->getStartUpB()->Events);
+    PossibleEvents* eventsA = *(battle->getStartUpA()->Events);
+    PossibleEvents* eventsB = *(battle->getStartUpB()->Events);
 
     auto option = json::parse(req.body);
 
