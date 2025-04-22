@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/style.css">
+        <script src="../static/post.js"></script>
+        <link rel="shortcut icon" href="../static/logo-startup.png" />
+        <title>Lista de batalhas</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-image">
+                <h1 style="color: #fffcf2; font-style: italic;">StartUp Rush</h1>
+                <img src="../static/logo-startup.png">
+            </div>
+            <div class="options">
+                <div class="form-header">
+                    <div class="title">
+                        <h1 style="color: #1b4965; font-style: italic;">Lista de Batalhas</h1>
+                    </div>
+                </div>
+                
+                <div class="inputsBattles" id="data-out">
+                
+                </div>
+            </div>
+        </div>
+        <script>
+            fetch('http://127.0.0.1:8080/battles')
+                .then(function(response){
+                    return response.json();
+            })
+            .then(function(battles){
+                let placeholder = document.querySelector("#data-out");
+                let out = "";
+                for(let battle of battles){
+                    console.log(battle.nameA);
+                    console.log(battle.nameB);
+                    if(battle.status === true){
+                        out += `
+                        <div class="buttons-disable">
+                        <button disabled>${battle.nameA} x ${battle.nameB}</button>
+                        </div>
+                    `;
+                    }else{
+
+                    out += `
+                        <div class="buttons">
+                        <button onclick="window.location.href='/eventos?battleID=${battle.battle}'">${battle.nameA} x ${battle.nameB}</button>
+                        </div>
+                    `;
+                    }
+                }
+                placeholder.innerHTML = out;
+            })
+        </script>
+    </body>
+</html>

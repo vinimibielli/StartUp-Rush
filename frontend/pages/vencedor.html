@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/style.css">
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <script src="../static/post.js"></script>
+        <link rel="shortcut icon" href="../static/logo-startup.png" />
+        <title>Resultados finais</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="optionsVencedor">
+                <div id="print-area">
+                    <div class="form-header">
+                        <div class="title">
+                            <img src="../static/logo-startup.png">
+                            <h1 style="color: #1b4965; font-style: italic;">Resultados</h1>
+                        </div>
+                    </div>
+                    <div id="data-outVencedor">
+                        
+                    </div>
+                    <table class="table-design">
+                        <thead>
+                            <tr>
+                                <th>Nome da StartUp</th>
+                                <th>Slogan da StartUp</th>
+                                <th>Data de fundação</th>
+                                <th>Pontos</th>
+                                <th>Pitch Convincente</th>
+                                <th>Produto com Bugs</th>
+                                <th>Boa Tração de Usuários</th>
+                                <th>Investidores irritados</th>
+                                <th>Fake News no Pitch</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-out">
+    
+                        </tbody>
+                    </table>
+                </div>
+                <div class="options-back">
+                    <div class="buttons">
+                        <button onclick="generateImage()">Salvar Ranking!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            fetch('http://127.0.0.1:8080/final_results')
+                .then(function(response){
+                    return response.json();
+            })
+            .then(function(startups){
+                let placeholder = document.querySelector("#data-out");
+                let placeholderVencedor = document.querySelector("#data-outVencedor");
+                let out = "";
+                let vencedorOut = "";
+                for(let startup of startups){
+                    if(startup.vencedor === 'sim'){
+                        vencedorOut += `
+                        <div class="titleVencedor">
+                        <h1 style="color: #1b4965; font-style: italic;">StartUp Vencedora: ${startup.name}</h1>
+                        <h2 style="color: #1b4965;">Slogan: ${startup.slogan}</h2>
+                    </div>
+                    `;  
+                    }
+                    out += `
+                        <tr>
+                            <td>${startup.name}</td>
+                            <td>${startup.slogan}</td>
+                            <td>${startup.foundation}</td>
+                            <td>${startup.points}</td>
+                            <td>${startup.convincent_pitch}</td>
+                            <td>${startup.product_bugs}</td>
+                            <td>${startup.user_track}</td>
+                            <td>${startup.angry_investor}</td>
+                            <td>${startup.fake_news_pitch}</td>
+                        </tr>
+                    `;
+                }
+                placeholder.innerHTML = out;
+                placeholderVencedor.innerHTML = vencedorOut;
+            })
+
+        </script>
+    </body>
+</html>

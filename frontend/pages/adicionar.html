@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/style.css">
+        <script src="../static/post.js"></script>
+        <link rel="shortcut icon" href="../static/logo-startup.png" />
+        <title>Cadastro de StartUp</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-image">
+                <h1 style="color: #fffcf2; font-style: italic;">StartUp Rush</h1>
+                <img src="../static/logo-startup.png">
+            </div>
+            <div class="options">
+                <div class="form-header">
+                    <div class="title">
+                        <h1 style="color: #1b4965; font-style: italic;">Cadastro de StartUp</h1>
+                    </div>
+                </div>
+                <form onsubmit="cadastrarStartUp(event)">
+                    <div class="inputs">
+                        <div class="box">
+                            <label for="name">Nome da StartUp</label>
+                            <input name="name" id="name" type="text" placeholder="Digite o nome da StartUp" required>
+                        </div>
+                        <div class="box">
+                            <label for="slogan">Slogan da StartUp</label>
+                            <input name="slogan" id="slogan" type="text" placeholder="Digite o slogan da StartUp" required>
+                        </div>
+                        <div class="box">
+                            <label for="foundation">Data de fundação da StartUp</label>
+                            <input name="foundation" id="foundation" type="number" min="1900" max="2025" step="1" value="" placeholder="Digite a data de fundação da StartUp" required>
+                        </div>
+                    </div>
+                    <div class="options-back">
+                        <div class="buttons">
+                            <button><a href="/">Voltar</a></button>
+                        </div>
+                        <div class="buttons">
+                            <button type="submit">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>

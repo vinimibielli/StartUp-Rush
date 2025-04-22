@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/style.css">
+        <script src="../static/post.js"></script>
+        <link rel="shortcut icon" href="../static/logo-startup.png" />
+        <title>Lista de alvos</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-image">
+                <h1 style="color: #fffcf2; font-style: italic;">StartUp Rush</h1>
+                <img src="../static/logo-startup.png">
+            </div>
+            <div class="options">
+                <div class="form-header">
+                    <div class="title">
+                        <h1 style="color: #1b4965; font-style: italic;">Lista de alvos</h1>
+                    </div>
+                </div>
+                
+                <div class="inputsBattles" id="data-out">
+                
+                </div>
+            </div>
+        </div>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const battleId = urlParams.get('battleID');
+            const eventId = urlParams.get('eventID');
+            fetch(`http://127.0.0.1:8080/battle/${battleId}/events/${eventId}/targetlist`)
+                .then(function(response){
+                    return response.json();
+            })
+            .then(function(targets){
+                let placeholder = document.querySelector("#data-out");
+                let out = "";
+                for(let target of targets){
+                    console.log(target);
+                    if(target.status === 'not avaliable'){
+                        out += `
+                        <div class="buttons-disable">
+                        <button disabled>${target.name}</button>
+                        </div>
+                    `;
+                    }else{
+
+                    out += `
+                        <div class="buttons">
+                        <button onclick="setTargets(event, '${target.id}', ${battleId}, ${eventId})">${target.name}</button>
+                        </div>
+                    `;
+                    }
+                }
+                out +=`
+                </div>
+
+                <div class="options-back">
+                    <div class="buttons">
+                        <button><a href="/eventos?battleID=${battleId}">Voltar</a></button>
+                    </div>
+                `   
+                placeholder.innerHTML = out;
+            })
+        </script>
+    </body>
+</html>

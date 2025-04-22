@@ -41,7 +41,7 @@ StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
     
     while(listStartUps.size() != 1){
         //Battles = randomBattles(listStartUps);
-        listStartUps = executeRoundBattles(Battles);
+        //listStartUps = executeRoundBattles(Battles);
     }
 
     return listStartUps[0];
@@ -50,23 +50,25 @@ StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
 std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps){
     int i;
     int ID = 0;
-    StartUp *auxFirst, *auxSecond;
-    Battle* battle = new Battle();
-    std::vector<Battle*>* Battles;
-    while(listStartUps.size() > 1){
+    std::vector<Battle*>* Battles = new std::vector<Battle*>();
+    std::vector<StartUp*> listStartUpsAux = listStartUps;
+
+    while(listStartUpsAux.size() > 1){
+        Battle* battle = new Battle();
         battle->setID(ID);
 
-        i = rand()%(listStartUps.size()) + 0;
-        battle->setStartUpA(listStartUps[i]);
-        listStartUps.erase(listStartUps.begin() + i);
+        i = rand()%(listStartUpsAux.size()) + 0;
+        battle->setStartUpA(listStartUpsAux[i]);
+        listStartUpsAux.erase(listStartUpsAux.begin() + i);
 
-        i = rand()%(listStartUps.size()) + 0;
-        battle->setStartUpA(listStartUps[i]);
+        i = rand()%(listStartUpsAux.size()) + 0;
+        battle->setStartUpB(listStartUpsAux[i]);
 
 
         Battles->push_back(battle);
-        listStartUps.erase(listStartUps.begin() + i);
+        listStartUpsAux.erase(listStartUpsAux.begin() + i);
 
+        ID++;
     }
 
     return Battles;
@@ -81,7 +83,7 @@ std::vector<StartUp*> executeRoundBattles(std::vector<std::pair<StartUp*, StartU
         std::cout << "Selecione a batalha que irá ser o jurado: ";
         std::cin >> selectOption;
         Battle = Battles[(selectOption - 1)];
-        classifiedStartUps.push_back(executeSingleBattle(Battle));
+        //classifiedStartUps.push_back(executeSingleBattle(Battle));
         Battles.erase(Battles.begin() + (selectOption - 1));
     }
     return classifiedStartUps;

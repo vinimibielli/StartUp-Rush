@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/style.css">
+        <script src="../static/post.js"></script>
+        <link rel="shortcut icon" href="../static/logo-startup.png" />
+        <title>Remoção de StartUp</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-image">
+                <h1 style="color: #fffcf2; font-style: italic;">StartUp Rush</h1>
+                <img src="../static/logo-startup.png">
+            </div>
+            <div class="options">
+                <div class="form-header">
+                    <div class="title">
+                        <h1 style="color: #1b4965; font-style: italic;">Remoção de StartUp</h1>
+                    </div>
+                </div>
+                <form onsubmit="deletarStartUp(event)">
+                    <div class="inputs">
+                        <div class="box">
+                            <label for="name">Nome da StartUp</label>
+                            <input name="name" id="name" type="text" placeholder="Digite o nome da StartUp" required>
+                        </div>
+                    </div>
+                    <div class="options-back">
+                        <div class="buttons">
+                            <button><a href="/">Voltar</a></button>
+                        </div>
+                        <div class="buttons">
+                            <button type="submit">Remover</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

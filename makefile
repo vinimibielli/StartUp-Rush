@@ -1,21 +1,21 @@
-TARGET = main.bin
+APP = StartUp_Rush
 
-SRCDIR = backend/srcs
-INCLUDEDIR = $(SRCDIR)/include
+SRCBACKEND = backend/srcs
+INCLUDEDIR = $(SRCBACKEND)/include
 
-SOURCE = $(wildcard $(SRCDIR)/*.cpp)
+SOURCE = $(wildcard $(SRCBACKEND)/*.cpp)
 HEADERS = $(wildcard $(INCLUDEDIR)/*.h)
 
 CC = g++
 CFLAGS = -g
 
-all: $(TARGET)
+all: $(APP)
 
-$(TARGET): $(SOURCE) $(HEADERS)
-	$(CC) -o $(TARGET) $(SOURCE) -I$(INCLUDEDIR)
+$(APP): $(SOURCE) $(HEADERS)
+	$(CC) -o $(APP) $(SOURCE) -I$(INCLUDEDIR)
 
 debug: $(SOURCE) $(HEADERS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCE) -I$(INCLUDEDIR)
+	$(CC) $(CFLAGS) -o $(APP) $(SOURCE) -I$(INCLUDEDIR)
 
 clean:
 	rm *.bin
