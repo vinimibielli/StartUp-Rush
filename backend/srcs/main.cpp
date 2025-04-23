@@ -16,10 +16,10 @@ int main(){
     listStartUps.push_back(new StartUp("HP", "Keep Reinventing", 1939));
     listStartUps.push_back(new StartUp("Lenovo", "Smarter technology for all", 1984));
     listStartUps.push_back(new StartUp("Asus", "In Search of Incredible", 1989));
-    listStartUps.push_back(new StartUp("Acer", "Explore beyond limits", 1974));
-    listStartUps.push_back(new StartUp("Apple", "Think different", 1976));
-    listStartUps.push_back(new StartUp("Sony", "make.believe", 1946));
-    listStartUps.push_back(new StartUp("Samsung", "Do What You Can't", 1969));
+    //listStartUps.push_back(new StartUp("Acer", "Explore beyond limits", 1974));
+    //listStartUps.push_back(new StartUp("Apple", "Think different", 1976));
+    //listStartUps.push_back(new StartUp("Sony", "make.believe", 1946));
+    //listStartUps.push_back(new StartUp("Samsung", "Do What You Can't", 1969));
     
     std::vector<Battle*>* listBattles; // vector das batalhas, este será atribuido sempre que um novo sorteio for feito
 

@@ -2,7 +2,7 @@ Para a execução deste código será necessário instalar a biblioteca Crow do 
 
 Utilize o comando no seu terminal Linux: 
 
-sudo apt-get crow
+sudo apt install crow
 
 Caso não seja possível realizar a instalação por meio deste comando, siga o tutorial disponível no site oficial do Crow: https://crowcpp.org/master/
 
