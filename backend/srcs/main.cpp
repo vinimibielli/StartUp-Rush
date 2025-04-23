@@ -176,7 +176,7 @@ int main(){
 CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps, &listBattles](const crow::request& req) {
     
     if((listStartUps.size() != 4) && (listStartUps.size() != 8)){ //verifica se a lista de StartUps possui 4 ou 8 usuários
-        return createJSON(400, "Insira um número válido de StartUps.", "");
+        return createJSON(400, "Insira um número válido (4 ou 8) de StartUps.", "");
     } 
     
     listBattles = randomBattles(listStartUps); //realiza o sorteio das batalhas e insere no vetor listBattles
@@ -188,7 +188,7 @@ CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps, &listBat
 CROW_ROUTE(app, "/auto_battle").methods("POST"_method)([&listStartUps, &listBattles, &classifiedStartUps, &events](const crow::request& req) {
     
     if((listStartUps.size() != 4) && (listStartUps.size() != 8)){ //verifica se a lista de StartUps possui 4 ou 8 usuários
-        return createJSON(400, "Insira um número válido de StartUps.", "");
+        return createJSON(400, "Insira um número válido (4 ou 8) de StartUps.", "");
     }
 
     classifiedStartUps = listStartUps;
