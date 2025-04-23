@@ -12,7 +12,7 @@
 #include "Battle.h"
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 
 crow::response createJSON(int status, std::string message, std::string next);
 crow::response returnHTML(const std::string& filepath);
