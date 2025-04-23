@@ -1,3 +1,4 @@
+//função responsável por fazer o envio da requisição POST para o backend
 function executarPost(url, body, method, callback) {
     console.log("Body=", body);
 
@@ -15,6 +16,7 @@ function executarPost(url, body, method, callback) {
     };
 }
 
+//função responsável por enviar os dados do cadastro para o backend em conjunto com a função executarPost
 function cadastrarStartUp(event){
     event.preventDefault();
 
@@ -46,6 +48,7 @@ function cadastrarStartUp(event){
     });
 }
 
+//função responsável por enviar os dados de remoção para o backend em conjunto com a função executarPost
 function deletarStartUp(event){
     event.preventDefault();
 
@@ -69,6 +72,7 @@ function deletarStartUp(event){
     });
 }
 
+//função responsável por enviar os dados para validar o início das batalhas (manual) para o backend em conjunto com a função executarPost
 function checkBattlesStart(event) {
     event.preventDefault();
 
@@ -86,6 +90,7 @@ function checkBattlesStart(event) {
     });
 }
 
+//função responsável por enviar os dados para validar o início das batalhas (automático) para o backend em conjunto com a função executarPost
 function checkBattlesStartAuto(event) {
     event.preventDefault();
 
@@ -103,6 +108,7 @@ function checkBattlesStartAuto(event) {
     });
 }
 
+//função responsável por enviar os dados para reiniciar a competição para o backend em conjunto com a função executarPost
 function restartStartUp(event) {
     event.preventDefault();
 
@@ -120,6 +126,7 @@ function restartStartUp(event) {
     });
 }
 
+//função responsável por enviar os dados para determinar os eventos das startups para o backend em conjunto com a função executarPost
 function setTargets(event, id, battleId, eventId, nameA, nameB){
     event.preventDefault();
 
@@ -142,6 +149,7 @@ function setTargets(event, id, battleId, eventId, nameA, nameB){
     });
 }
 
+//função responsável por enviar os dados para verificar a finalização das batalhas para o backend em conjunto com a função executarPost
 function checkFinalize(event, battleId) {
     event.preventDefault();
 

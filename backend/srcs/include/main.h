@@ -14,6 +14,5 @@
 #include "crow/middlewares/cors.h"
 #include "json.hpp"
 
-
 crow::response createJSON(int status, std::string message, std::string next);
 crow::response returnHTML(const std::string& filepath);

@@ -1,5 +1,6 @@
 #include "./include/utils.h"
 
+//função responsável por ordenar a lista de StartUps de forma decrescente
 std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps){
     StartUp* aux;
     for(int i = 0; i < listStartUps.size(); i++){
@@ -15,17 +16,7 @@ std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps){
     return listStartUps;
 }
 
-StartUp* executeStartUpRush(std::vector<StartUp*> listStartUps){
-    std::vector<std::pair<StartUp*, StartUp*>> Battles;
-    
-    while(listStartUps.size() != 1){
-        //Battles = randomBattles(listStartUps);
-        //listStartUps = executeRoundBattles(Battles);
-    }
-
-    return listStartUps[0];
-}
-
+//função responsável por randomizar as batalhas
 std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps){
     int i;
     int ID = 0;
@@ -53,6 +44,7 @@ std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps){
     return Battles;
 }
 
+//função responsável por realizar as batalhas de forma automática
 std::vector<StartUp*> randomizeBattles(std::vector<Battle*>* listBattles, std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events){
     
     int randomNumber;

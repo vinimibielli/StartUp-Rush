@@ -14,7 +14,6 @@
 
 std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps);
 std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps);
-std::pair<bool, bool> checkEvents(std::pair<StartUp*, StartUp*> Battle, int selectEvent);
 std::vector<StartUp*> randomizeBattles(std::vector<Battle*>* listBattles, std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events);
 
 

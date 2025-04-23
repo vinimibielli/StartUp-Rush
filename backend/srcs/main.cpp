@@ -11,18 +11,8 @@ int main(){
     std::unordered_set<std::string> nameStartUps; // unordered_set que será responsável por armazenar o nome das StartUps participantes
     std::vector<StartUp*> listStartUps; // vector onde estará armazenado as StartUps adicionadas
     std::vector<StartUp*> classifiedStartUps; // vector que armazenará as StartUps classificadas para não ter interferência com a lista original
-
-    listStartUps.push_back(new StartUp("Dell", "The power to do more", 2016));
-    listStartUps.push_back(new StartUp("HP", "Keep Reinventing", 1939));
-    listStartUps.push_back(new StartUp("Lenovo", "Smarter technology for all", 1984));
-    listStartUps.push_back(new StartUp("Asus", "In Search of Incredible", 1989));
-    //listStartUps.push_back(new StartUp("Acer", "Explore beyond limits", 1974));
-    //listStartUps.push_back(new StartUp("Apple", "Think different", 1976));
-    //listStartUps.push_back(new StartUp("Sony", "make.believe", 1946));
-    //listStartUps.push_back(new StartUp("Samsung", "Do What You Can't", 1969));
     
     std::vector<Battle*>* listBattles; // vector das batalhas, este será atribuido sempre que um novo sorteio for feito
-
 
     // unordered_map referente aos eventos possíveis, desta forma é evitado uma repetição grande de if/else ou switch
     std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events = {
@@ -440,6 +430,7 @@ CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classif
     return res;
 });
 
+//rota responsável por fazer a limpeza dos dados para reiniciar a competição
 CROW_ROUTE(app, "/restart_startup").methods("POST"_method)([&listStartUps, &listBattles, &classifiedStartUps, &events](const crow::request& req) {
     
 
@@ -457,11 +448,11 @@ CROW_ROUTE(app, "/restart_startup").methods("POST"_method)([&listStartUps, &list
 
 app.port(8080).multithreaded().run(); //iniciando o servidor através da porta 8080
 
-for (auto startup : listStartUps) {
+for (auto startup : listStartUps) { //realizando a desalocação de memória das startups
     delete startup;
 }
-listStartUps.clear();
-classifiedStartUps.clear();
+listStartUps.clear(); //esvaziando o vector listStartUps
+classifiedStartUps.clear(); //esvaziando o vector classifiedStartUps
 
 return 0;
 

@@ -18,4 +18,4 @@ debug: $(SOURCE) $(HEADERS)
 	$(CC) $(CFLAGS) -o $(APP) $(SOURCE) -I$(INCLUDEDIR)
 
 clean:
-	rm *.bin
+	rm $(APP)
