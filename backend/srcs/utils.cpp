@@ -52,3 +52,67 @@ std::vector<Battle*>* randomBattles(std::vector<StartUp*> listStartUps){
 
     return Battles;
 }
+
+std::vector<StartUp*> randomizeBattles(std::vector<Battle*>* listBattles, std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events){
+    
+    int randomNumber;
+    int n = 0;
+    std::vector<StartUp*> classifiedStartUps;
+
+    while(n < (*listBattles).size()){
+
+        Battle* battle = (*listBattles)[n];
+        PossibleEvents* eventsA = (battle->getStartUpA()->Events);
+        PossibleEvents* eventsB = (battle->getStartUpB()->Events);
+
+        for(int idEvent = 1; idEvent <= 5; idEvent++){
+            for(int j = 0; j < 2; j++){
+                randomNumber = rand() % 2;
+                if((j == 0) && (randomNumber == 1)){
+                    events[idEvent].first(*eventsA);
+                }
+                if((j == 1) && (randomNumber == 1)){
+                    events[idEvent].first(*eventsB);
+                }
+            }
+        }
+
+    StartUp* Vencedor;
+
+    //realiza o cálculo dos eventos que foram realizados
+    battle->getStartUpA()->editPoints(eventsA->valueEvents());
+    battle->getStartUpB()->editPoints(eventsB->valueEvents());
+
+    //coloca todos os eventos como disponíveis para a próxima batalha
+    eventsA->cleanBools();
+    eventsB->cleanBools();
+
+    //verifica qual StartUp foi a vencedora e realiza o SharkFight caso necessário
+    if(battle->getStartUpA()->getPoints() > battle->getStartUpB()->getPoints()){
+        Vencedor = battle->getStartUpA();
+    } else if(battle->getStartUpA()->getPoints() < battle->getStartUpB()->getPoints()){
+        Vencedor = battle->getStartUpB(); 
+    } else {
+        int i = rand() % 2;
+        if(i == 1){
+            battle->getStartUpA()->editPoints(2);
+            Vencedor = battle->getStartUpA();
+        } else {
+            battle->getStartUpB()->editPoints(2);
+            Vencedor = battle->getStartUpB();
+        }
+
+    }
+
+    Vencedor->winBattlePoints(); //atribui os 30 pontos para a StartUp vencedor
+    classifiedStartUps.push_back(Vencedor); //insere a StartUp vencedor na lista de classificados
+        n++;
+    }
+
+    for (auto battle : *listBattles) {
+        delete battle;
+    }
+    delete listBattles;
+
+    return classifiedStartUps;
+}

@@ -18,7 +18,7 @@ function executarPost(url, body, method, callback) {
 function cadastrarStartUp(event){
     event.preventDefault();
 
-    let url = "http://127.0.0.1:8080/add_startup";
+    let url = "/add_startup";
 
     let name = document.getElementById("name").value;
     let slogan = document.getElementById("slogan").value;
@@ -41,7 +41,7 @@ function cadastrarStartUp(event){
         if (data.next) {
             window.location.href = data.next;
         } else {
-            alert("StartUp cadastrada, mas sem redirecionamento!");
+            alert(data.message);
         }
     });
 }
@@ -49,7 +49,7 @@ function cadastrarStartUp(event){
 function deletarStartUp(event){
     event.preventDefault();
 
-    let url = "http://127.0.0.1:8080/remove_startup";
+    let url = "/remove_startup";
 
     let name = document.getElementById("name").value;
 
@@ -64,7 +64,7 @@ function deletarStartUp(event){
         if (data.next) {
             window.location.href = data.next;
         } else {
-            alert("StartUp removida, mas sem redirecionamento!");
+            alert(data.message);
         }
     });
 }
@@ -72,7 +72,7 @@ function deletarStartUp(event){
 function checkBattlesStart(event) {
     event.preventDefault();
 
-    let url = "http://127.0.0.1:8080/start_battle";
+    let url = "/start_battle";
 
     let method = 'POST';
 
@@ -81,15 +81,49 @@ function checkBattlesStart(event) {
         if (data.next) {
             window.location.href = data.next;
         } else {
-            alert("Insira um número válido de StartUps!");
+            alert(data.message);
         }
     });
 }
 
-function setTargets(event, id, battleId, eventId){
+function checkBattlesStartAuto(event) {
     event.preventDefault();
 
-    let url = `http://127.0.0.1:8080/battle/${battleId}/events/${eventId}/target`;
+    let url = "/auto_battle";
+
+    let method = 'POST';
+
+    executarPost(url, "", method, function(responseText) {
+        let data = JSON.parse(responseText);
+        if (data.next) {
+            window.location.href = data.next;
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function restartStartUp(event) {
+    event.preventDefault();
+
+    let url = "/restart_startup";
+
+    let method = 'POST';
+
+    executarPost(url, "", method, function(responseText) {
+        let data = JSON.parse(responseText);
+        if (data.next) {
+            window.location.href = data.next;
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function setTargets(event, id, battleId, eventId, nameA, nameB){
+    event.preventDefault();
+
+    let url = `/battle/${battleId}/events/${eventId}/target`;
 
     let body = {
         "name": id
@@ -100,10 +134,10 @@ function setTargets(event, id, battleId, eventId){
     executarPost(url, body, method, function(responseText) {
         let data = JSON.parse(responseText);
         if (data.next) {
-            let next_page = data.next + '?battleID=' + battleId;
+            let next_page = data.next + '?battleID=' + battleId + "&nameA=" + nameA + '&nameB=' + nameB;
             window.location.href = next_page;
         } else {
-            alert("StartUp removida, mas sem redirecionamento!");
+            alert(data.message);
         }
     });
 }
@@ -111,7 +145,7 @@ function setTargets(event, id, battleId, eventId){
 function checkFinalize(event, battleId) {
     event.preventDefault();
 
-    let url = `http://127.0.0.1:8080/battle/${battleId}/finalize`;
+    let url = `/battle/${battleId}/finalize`;
 
     let method = 'POST';
 

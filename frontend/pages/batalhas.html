@@ -36,19 +36,19 @@
                 let placeholder = document.querySelector("#data-out");
                 let out = "";
                 for(let battle of battles){
-                    console.log(battle.nameA);
-                    console.log(battle.nameB);
+                    console.log(battle);
+                    console.log();
                     if(battle.status === true){
                         out += `
                         <div class="buttons-disable">
-                        <button disabled>${battle.nameA} x ${battle.nameB}</button>
+                        <button disabled>${battle.nameA} x ${battle.nameB}<br>Vencedor: ${battle.winner} (${battle.winnerPoints})</button>
                         </div>
                     `;
                     }else{
 
                     out += `
                         <div class="buttons">
-                        <button onclick="window.location.href='/eventos?battleID=${battle.battle}'">${battle.nameA} (${battle.pointsA}) x ${battle.nameB} (${battle.pointsB})</button>
+                        <button onclick="window.location.href='/eventos?battleID=${battle.battle}&nameA=${battle.nameA}&nameB=${battle.nameB}'">(${battle.pointsA}) ${battle.nameA} x ${battle.nameB} (${battle.pointsB})</button>
                         </div>
                     `;
                     }

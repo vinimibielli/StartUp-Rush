@@ -17,33 +17,40 @@
             </div>
             <div class="options">
                 <div class="form-header">
-                    <div class="title">
+                    <div class="titleOptions">
                         <h1 style="color: #1b4965; font-style: italic;">Lista de Eventos</h1>
+                        <div id="data-outbattle">
+                        </div>
                     </div>
+                   
                 </div>
                 
                 <div class="inputsBattles" id="data-out">
                 
                 </div>
-
+                
             </div>
         </div>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
             const battleId = urlParams.get('battleID');
+            const StartUpA = urlParams.get('nameA');
+            const StartUpB = urlParams.get('nameB');
             fetch(`http://127.0.0.1:8080/battle/${battleId}/events`)
                 .then(function(response){
                     return response.json();
             })
             .then(function(events){
                 let placeholder = document.querySelector("#data-out");
+                let placeholderBattle = document.querySelector("#data-outbattle");
                 let out = "";
+                let outBattle = ""; 
                 for(let event of events){
                     console.log("event:", event);
                     
                     out += `
                         <div class="buttons">
-                        <button onclick="window.location.href='/alvo?battleID=${battleId}&eventID=${event.id}'">${event.name}</button>
+                        <button onclick="window.location.href='/alvo?battleID=${battleId}&eventID=${event.id}&nameA=${encodeURIComponent(StartUpA)}&nameB=${encodeURIComponent(StartUpB)}'">${event.name}</button>
                         </div>
                     `;
                     
@@ -56,8 +63,13 @@
                     <div class="buttons">
                         <button onclick="checkFinalize(event, ${battleId})">Finalizar</button>
                     </div>
-                `   
+                `; 
+                outBattle += `
+                        <h2 style="color: #1b4965; font-style: italic;">${StartUpA} x ${StartUpB}</h2>
+                    `;  
                 placeholder.innerHTML = out;
+                placeholderBattle.innerHTML = outBattle;
+                
             })
         </script>
     </body>

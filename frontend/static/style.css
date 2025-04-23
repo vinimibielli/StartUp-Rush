@@ -48,16 +48,28 @@ body{
     width: 100%;
     flex-direction: column;
     background-color: #fffcf2;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
 .title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1dvh;
+}
+
+.titleOptions {
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 1dvh;
+}
+
+.title img{
+    width: 3rem;
 }
 
 .titleVencedor{
@@ -157,7 +169,6 @@ body{
         max-height: 20rem;
         padding-right: 5rem;
     }
-    
 }
 
 .table-design{

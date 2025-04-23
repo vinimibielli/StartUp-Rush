@@ -65,149 +65,36 @@ int main(){
         return res;
     });
 
-    CROW_ROUTE(app, "/")([](){
-
-        std::ifstream file("./frontend/pages/index.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
-        
+    CROW_ROUTE(app, "/")([](){ //rota responsável por mostrar o menu de opções (index.html)
+        return returnHTML("./frontend/pages/index.html");
     });
 
-    CROW_ROUTE(app, "/adicionar")([](){
-
-        std::ifstream file("./frontend/pages/adicionar.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/adicionar")([](){ //rota responsável por mostrar o cadastro de StartUps (adicionar.html)
+        return returnHTML("./frontend/pages/adicionar.html");
     });
 
-    CROW_ROUTE(app, "/remover")([](){
-
-        std::ifstream file("./frontend/pages/remover.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/remover")([](){ //rota responsável por mostrar a remoção de StartUps (adicionar.html)
+        return returnHTML("./frontend/pages/remover.html");
     });
 
-    CROW_ROUTE(app, "/lista")([](){
-
-        std::ifstream file("./frontend/pages/lista.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/lista")([](){ //rota responsável por mostrar a lista de StartUps (lista.html)
+        return returnHTML("./frontend/pages/lista.html");
     });
 
-    CROW_ROUTE(app, "/batalhas")([](){
-
-        std::ifstream file("./frontend/pages/batalhas.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/batalhas")([](){ //rota responsável por mostrar o menu de batalhas (batalhas.html)
+        return returnHTML("./frontend/pages/batalhas.html");
     });
 
-    CROW_ROUTE(app, "/eventos")([](){
-
-        std::ifstream file("./frontend/pages/eventos.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/eventos")([](){ //rota responsável por mostrar o menu de eventos (eventos.html)
+        return returnHTML("./frontend/pages/eventos.html");
     });
 
-    CROW_ROUTE(app, "/alvo")([](){
-
-        std::ifstream file("./frontend/pages/alvo.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/alvo")([](){ //rota responsável por mostrar o menu de alvos (alvos.html)
+        return returnHTML("./frontend/pages/alvo.html");
     });
 
-    CROW_ROUTE(app, "/vencedor")([](){
-
-        std::ifstream file("./frontend/pages/vencedor.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/vencedor")([](){ //rota responsável por mostrar o vencedor e a tabela final (vencedor.html)
+        return returnHTML("./frontend/pages/vencedor.html");
     });
 
     //rota responsável por fazer a adição de uma nova StartUp
@@ -234,7 +121,7 @@ int main(){
             }
 
         } catch (const nlohmann::json::exception& e) {
-            return createJSON(500, "Erro no JSONTESTE", "");
+            return createJSON(500, "Erro no JSON", "");
         } catch(...){
             return createJSON(500, "Erro ao adicionar a StartUp.", "");
         }
@@ -286,10 +173,10 @@ int main(){
 });
 
 //rota responsável for coordenar o início das batalhas
-CROW_ROUTE(app, "/start_battle").methods("POST"_method)([listStartUps, &listBattles](const crow::request& req) {
+CROW_ROUTE(app, "/start_battle").methods("POST"_method)([&listStartUps, &listBattles](const crow::request& req) {
     
     if((listStartUps.size() != 4) && (listStartUps.size() != 8)){ //verifica se a lista de StartUps possui 4 ou 8 usuários
-        return createJSON(400, "Insira um número válido de StartUps", "");
+        return createJSON(400, "Insira um número válido de StartUps.", "");
     } 
     
     listBattles = randomBattles(listStartUps); //realiza o sorteio das batalhas e insere no vetor listBattles
@@ -297,6 +184,24 @@ CROW_ROUTE(app, "/start_battle").methods("POST"_method)([listStartUps, &listBatt
     return createJSON(200, "Batalhas foram iniciadas!", "/batalhas");
     
 });
+
+CROW_ROUTE(app, "/auto_battle").methods("POST"_method)([&listStartUps, &listBattles, &classifiedStartUps, &events](const crow::request& req) {
+    
+    if((listStartUps.size() != 4) && (listStartUps.size() != 8)){ //verifica se a lista de StartUps possui 4 ou 8 usuários
+        return createJSON(400, "Insira um número válido de StartUps.", "");
+    }
+
+    classifiedStartUps = listStartUps;
+
+    while(classifiedStartUps.size() != 1){
+        listBattles = randomBattles(classifiedStartUps);
+        classifiedStartUps = randomizeBattles(listBattles, events);
+    }
+    
+    return createJSON(200, "Batalhas foram iniciadas!", "/vencedor");
+    
+});
+
 
 //--------------------------------------------------------------------------------------------------------
 
@@ -308,7 +213,16 @@ CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::req
     json battlesAvaliables = json::array();
     
     for(const auto aux : *listBattles){ //for onde será montado o arrays de cada batalha
-        battlesAvaliables.push_back({{"battle", aux->getID()}, {"status", aux->getFinalized()}, {"nameA", aux->getStartUpA()->getName()}, {"pointsA", aux->getStartUpA()->getPoints()}, {"nameB", aux->getStartUpB()->getName()}, {"pointsB", aux->getStartUpA()->getPoints()}});
+        if(aux->getFinalized() == true){
+            if(aux->getStartUpA()->getPoints() > aux->getStartUpB()->getPoints()){
+                battlesAvaliables.push_back({{"battle", aux->getID()}, {"status", aux->getFinalized()}, {"nameA", aux->getStartUpA()->getName()}, {"pointsA", aux->getStartUpA()->getPoints()}, {"nameB", aux->getStartUpB()->getName()}, {"pointsB", aux->getStartUpB()->getPoints()}, {"winner", aux->getStartUpA()->getName()}, {"winner", aux->getStartUpA()->getName()}, {"winnerPoints", aux->getStartUpA()->getPoints()}});  
+            }
+            else{
+                battlesAvaliables.push_back({{"battle", aux->getID()}, {"status", aux->getFinalized()}, {"nameA", aux->getStartUpA()->getName()}, {"pointsA", aux->getStartUpA()->getPoints()}, {"nameB", aux->getStartUpB()->getName()}, {"pointsB", aux->getStartUpB()->getPoints()}, {"winner", aux->getStartUpB()->getName()}, {"winnerPoints", aux->getStartUpB()->getPoints()}});  
+            }
+        }else{
+        battlesAvaliables.push_back({{"battle", aux->getID()}, {"status", aux->getFinalized()}, {"nameA", aux->getStartUpA()->getName()}, {"pointsA", aux->getStartUpA()->getPoints()}, {"nameB", aux->getStartUpB()->getName()}, {"pointsB", aux->getStartUpB()->getPoints()}, {"winner", ""}, {"winnerPoints", 0}});
+        }
     }
 
     crow::response res(battlesAvaliables.dump(0));
@@ -358,6 +272,7 @@ CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, 
     classifiedStartUps.push_back(Vencedor); //insere a StartUp vencedor na lista de classificados
 
     if(battle->getFinalized() == true && (listBattles->size() == 1)){ //verifica se a batalha da rodada foi finalizada e se a lista de batalhas é igual a 1
+        delete battle;
         return createJSON(200, "O vencedor foi determinado!", "/vencedor"); //caso seja, todas as batalhas foram realizadas e temos um vencedor
     }
     for(const auto aux : *listBattles){ //caso não seja verdade, vai verificar ainda tem alguma batalha que não foi finalizada
@@ -412,8 +327,8 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/targetlist").methods("GET"_method)([
 
         if(!(events[idEvent].second(eventsA).first) && (!(events[idEvent].second(eventsB).first))){ //verifica se está disponível para ambos
             messageOption = {
-                {{"id", "usuarioA"}, {"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                {{"id", "usuarioB"}, {"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                {{"id", "StartUpA"}, {"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                {{"id", "StartUpB"}, {"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
                 {{"id", ""}, {"status", "avaliable"}, {"name", "Ambas"}}
             };
         
@@ -462,17 +377,17 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/target").methods("POST"_method)([&li
 
     if(stringOption == "StartUpA"){ //verifica através do frontend se foi a StartUpA
         events[idEvent].first(*eventsA);
-        return createJSON(201, "Evento realizado.", location);
+        return createJSON(200, "Evento realizado.", location);
     } else if(stringOption == "StartUpB"){ //verifica através do frontend se foi a StartUpB
         events[idEvent].first(*eventsB);
-        return createJSON(202, "Evento realizado.", location);
+        return createJSON(200, "Evento realizado.", location);
     } else{ //caso seja escolhido ambas, as duas irão realizar o evento
         events[idEvent].first(*eventsA);
         events[idEvent].first(*eventsB);
-        return createJSON(203, "Evento realizado.", location);
+        return createJSON(200, "Evento realizado.", location);
     }
 
-    return createJSON(200, "Evento realizado.", location);
+    return createJSON(400, "Nenhum evento realizado.", location);
     
 
 });
@@ -525,11 +440,30 @@ CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classif
     return res;
 });
 
+CROW_ROUTE(app, "/restart_startup").methods("POST"_method)([&listStartUps, &listBattles, &classifiedStartUps, &events](const crow::request& req) {
+    
+
+    for (auto startup : listStartUps) {
+        delete startup;
+    }
+    listStartUps.clear();
+    classifiedStartUps.clear();
+
+    return createJSON(200, "Reiniciando StartUp Rush!", "/");
+    
+});
+
 //--------------------------------------------------------------------------------------------------------
 
-
-
 app.port(8080).multithreaded().run(); //iniciando o servidor através da porta 8080
+
+for (auto startup : listStartUps) {
+    delete startup;
+}
+listStartUps.clear();
+classifiedStartUps.clear();
+
+return 0;
 
 }
 
@@ -541,24 +475,23 @@ crow::response createJSON(int status, std::string message, std::string next){
         resposta["next"] = next;
     }
 
-    crow::response res(status, resposta.dump(4));
+    crow::response res(status, resposta.dump(0));
     res.set_header("Access-Control-Allow-Origin", "*");
     return res;
 }
 
 //função responsável por criar o HTML de resposta
-crow::response returnHTML(std::string html){
-
-    std::ifstream file("./frontend/pages/" + html);
-
+crow::response returnHTML(const std::string& filepath){
+std::ifstream file(filepath);
+    
     if (!file) {
-        std::cerr << "Erro: index.html não encontrado!" << std::endl;
+        std::cerr << "Erro: " << filepath << " não encontrado!" << std::endl;
         return crow::response(404, "HTML não encontrado");
     }
-    
+
     std::stringstream buffer;
     buffer << file.rdbuf();
-    
+
     crow::response res(buffer.str());
     res.set_header("Content-Type", "text/html");
     res.set_header("Access-Control-Allow-Origin", "*");

@@ -8,7 +8,7 @@ StartUp::StartUp(){
     Events = new PossibleEvents();
 }
 StartUp::~StartUp(){
-    
+    delete Events;
 }
 StartUp::StartUp(std::string Name, std::string Slogan, int Foundation){
     this->startupName = Name;

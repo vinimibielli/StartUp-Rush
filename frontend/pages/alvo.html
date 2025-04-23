@@ -17,8 +17,10 @@
             </div>
             <div class="options">
                 <div class="form-header">
-                    <div class="title">
+                    <div class="titleOptions">
                         <h1 style="color: #1b4965; font-style: italic;">Lista de alvos</h1>
+                        <div id="data-outbattle">
+                        </div>
                     </div>
                 </div>
                 
@@ -31,13 +33,17 @@
             const urlParams = new URLSearchParams(window.location.search);
             const battleId = urlParams.get('battleID');
             const eventId = urlParams.get('eventID');
+            const StartUpA = urlParams.get('nameA');
+            const StartUpB = urlParams.get('nameB');
             fetch(`http://127.0.0.1:8080/battle/${battleId}/events/${eventId}/targetlist`)
                 .then(function(response){
                     return response.json();
             })
             .then(function(targets){
                 let placeholder = document.querySelector("#data-out");
+                let placeholderBattle = document.querySelector("#data-outbattle");
                 let out = "";
+                let outBattle = ""; 
                 for(let target of targets){
                     console.log(target);
                     if(target.status === 'not avaliable'){
@@ -50,7 +56,7 @@
 
                     out += `
                         <div class="buttons">
-                        <button onclick="setTargets(event, '${target.id}', ${battleId}, ${eventId})">${target.name}</button>
+                        <button onclick="setTargets(event, '${target.id}', ${battleId}, ${eventId}, '${StartUpA}', '${StartUpB}')">${target.name}</button>
                         </div>
                     `;
                     }
@@ -60,10 +66,14 @@
 
                 <div class="options-back">
                     <div class="buttons">
-                        <button><a href="/eventos?battleID=${battleId}">Voltar</a></button>
+                        <button><a href="/eventos?battleID=${battleId}&nameA=${encodeURIComponent(StartUpA)}&nameB=${encodeURIComponent(StartUpB)}">Voltar</a></button>
                     </div>
                 `   
+                outBattle += `
+                        <h2 style="color: #1b4965; font-style: italic;">${StartUpA} x ${StartUpB}</h2>
+                    `;  
                 placeholder.innerHTML = out;
+                placeholderBattle.innerHTML = outBattle;
             })
         </script>
     </body>
