@@ -2,17 +2,15 @@
 
 using json = nlohmann::json;
 
-
-
 int main(){
 
-    srand(time(0));
+    srand(time(0)); // gerando uma nova seed para garantir um sorteio aleatório
 
-    crow::SimpleApp app;
+    crow::SimpleApp app; // simpleApp da biblioteca crow
 
-    std::unordered_set<std::string> nameStartUps;
-    std::vector<StartUp*> listStartUps;
-    std::vector<StartUp*> classifiedStartUps;
+    std::unordered_set<std::string> nameStartUps; // unordered_set que será responsável por armazenar o nome das StartUps participantes
+    std::vector<StartUp*> listStartUps; // vector onde estará armazenado as StartUps adicionadas
+    std::vector<StartUp*> classifiedStartUps; // vector que armazenará as StartUps classificadas para não ter interferência com a lista original
 
     listStartUps.push_back(new StartUp("Dell", "The power to do more", 2016));
     listStartUps.push_back(new StartUp("HP", "Keep Reinventing", 1939));
@@ -23,8 +21,10 @@ int main(){
     listStartUps.push_back(new StartUp("Sony", "make.believe", 1946));
     listStartUps.push_back(new StartUp("Samsung", "Do What You Can't", 1969));
     
-    std::vector<Battle*>* listBattles;
+    std::vector<Battle*>* listBattles; // vector das batalhas, este será atribuido sempre que um novo sorteio for feito
 
+
+    // unordered_map referente aos eventos possíveis, desta forma é evitado uma repetição grande de if/else ou switch
     std::unordered_map<int, std::pair<std::function<void(PossibleEvents&)>, std::function<std::pair<bool, int>(PossibleEvents&)>>> events = {
         {1, std::make_pair(&PossibleEvents::setConvincentPitch, &PossibleEvents::getConvincentPitch)},
         {2, std::make_pair(&PossibleEvents::setProductsBugs, &PossibleEvents::getProductsBugs)},
@@ -35,7 +35,7 @@ int main(){
 
     //-------------------------------------INICIO-------------------------------------------------------
 
-    CROW_ROUTE(app, "/static/<string>")([](const crow::request& req, std::string filename) {
+    CROW_ROUTE(app, "/static/<string>")([](const crow::request& req, std::string filename) { //rota responsável por mandar os statics(css e js) para o html
      
         std::string filePath = "./frontend/static/" + filename;
       
@@ -65,170 +65,59 @@ int main(){
         return res;
     });
 
-    CROW_ROUTE(app, "/")([](){
-
-        std::ifstream file("./frontend/pages/index.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
-        
+    CROW_ROUTE(app, "/")([](){ //rota responsável por mostrar o menu de opções (index.html)
+        return returnHTML("index.html");
     });
 
-    CROW_ROUTE(app, "/adicionar")([](){
-
-        std::ifstream file("./frontend/pages/adicionar.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/adicionar")([](){ //rota responsável por mostrar o cadastro de StartUps (adicionar.html)
+        return returnHTML("adicionar.html");
     });
 
-    CROW_ROUTE(app, "/remover")([](){
-
-        std::ifstream file("./frontend/pages/remover.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/remover")([](){ //rota responsável por mostrar a remoção de StartUps (adicionar.html)
+        return returnHTML("remover.html");
     });
 
-    CROW_ROUTE(app, "/lista")([](){
-
-        std::ifstream file("./frontend/pages/lista.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/lista")([](){ //rota responsável por mostrar a lista de StartUps (lista.html)
+        return returnHTML("lista.html");
     });
 
-    CROW_ROUTE(app, "/batalhas")([](){
-
-        std::ifstream file("./frontend/pages/batalhas.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/batalhas")([](){ //rota responsável por mostrar o menu de batalhas (batalhas.html)
+        return returnHTML("batalhas.html");
     });
 
-    CROW_ROUTE(app, "/eventos")([](){
-
-        std::ifstream file("./frontend/pages/eventos.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/eventos")([](){ //rota responsável por mostrar o menu de eventos (eventos.html)
+        return returnHTML("eventos.html");
     });
 
-    CROW_ROUTE(app, "/alvo")([](){
-
-        std::ifstream file("./frontend/pages/alvo.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/alvo")([](){ //rota responsável por mostrar o menu de alvos (alvos.html)
+        return returnHTML("alvo.html");
     });
 
-    CROW_ROUTE(app, "/vencedor")([](){
-
-        std::ifstream file("./frontend/pages/vencedor.html");
-
-        if (!file) {
-            std::cerr << "Erro: index.html não encontrado!" << std::endl;
-            return crow::response(404, "HTML não encontrado");
-        }
-        
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        
-        crow::response res(buffer.str());
-        res.set_header("Content-Type", "text/html");
-        res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+    CROW_ROUTE(app, "/vencedor")([](){ //rota responsável por mostrar o vencedor e a tabela final (vencedor.html)
+        return returnHTML("vencedor.html");
     });
 
+    //rota responsável por fazer a adição de uma nova StartUp
     CROW_ROUTE(app, "/add_startup").methods("POST"_method)([&listStartUps, &nameStartUps](const crow::request& req) {
         try{
 
-            auto dados = json::parse(req.body);
+            auto dados = json::parse(req.body); //recebe os dados do frontend via POST em um json
 
-            if(!dados.contains("name") || !dados.contains("slogan") || !dados.contains("foundation")){
+            if(!dados.contains("name") || !dados.contains("slogan") || !dados.contains("foundation")){ //verifica se os dados estão corretos
                 return createJSON(400, "Dados inválidos", "");
             }
 
+            //atribui os dados para suas referentes variáveis
             std::string startupName = dados["name"];
             std::string startupSlogan = dados["slogan"];
             int startupFoundation = dados["foundation"];
 
-            if(nameStartUps.find(startupName) == nameStartUps.end()){
+            if(nameStartUps.find(startupName) == nameStartUps.end()){ //verifica no unordered_set se a StartUp já existe, caso não exista a inserção será feita
                 nameStartUps.insert(startupName);
                 listStartUps.push_back(new StartUp(startupName, startupSlogan, startupFoundation));
                 return createJSON(201, "A startUp foi adicionada!", "/");
             } else{
-                return createJSON(400, "StartUp já existente.", "");
+                return createJSON(400, "StartUp já existente.", ""); //retorna que a StartUp já existe
             }
 
         } catch (const nlohmann::json::exception& e) {
@@ -239,17 +128,17 @@ int main(){
         
     });
 
+    //rota onde será feita a remoção de uma StartUp
     CROW_ROUTE(app, "/remove_startup").methods("DELETE"_method)([&listStartUps, &nameStartUps](const crow::request& req) {
        try{
-            auto dados = json::parse(req.body);
+            auto dados = json::parse(req.body); //recebe os dados em formato json
             std::string startupName = dados["name"];
 
-
-            if(nameStartUps.find(startupName) != nameStartUps.end()){
+            if(nameStartUps.find(startupName) != nameStartUps.end()){ //verifica se a StartUp existe para fazer a remoção
                 for(int i = 0; i < listStartUps.size(); i++){
                     if(listStartUps[i]->getName() == startupName){
-                        listStartUps.erase(listStartUps.begin() + i);
-                        nameStartUps.erase(startupName);
+                        listStartUps.erase(listStartUps.begin() + i); //apaga a StartUp da lista
+                        nameStartUps.erase(startupName); //apaga a StartUp da lista de nomes
                         break;
                     }
                 }
@@ -265,11 +154,12 @@ int main(){
         }
     });
 
+    //rota onde será feito o envio das StartUps existentes para o frontend
     CROW_ROUTE(app, "/show_startups").methods("GET"_method)([&listStartUps](const crow::request& req) {
        
-        json startupsJSON = json::array();
+        json startupsJSON = json::array(); //cria um array de json
 
-        for(int i = 0; i < listStartUps.size(); i++){
+        for(int i = 0; i < listStartUps.size(); i++){ //faz um for que irá adicionar o nome, slogan e data de fundação da StartUp no array
             startupsJSON.push_back({
                 {"name", listStartUps[i]->getName()},
                 {"slogan", listStartUps[i]->getSlogan()},
@@ -279,16 +169,17 @@ int main(){
 
         crow::response res(startupsJSON.dump());
         res.set_header("Access-Control-Allow-Origin", "*");
-        return res;
+        return res; //envia a resposta ao frontend
 });
 
+//rota responsável for coordenar o início das batalhas
 CROW_ROUTE(app, "/start_battle").methods("POST"_method)([listStartUps, &listBattles](const crow::request& req) {
     
-    if((listStartUps.size() != 4) && (listStartUps.size() != 8)){
+    if((listStartUps.size() != 4) && (listStartUps.size() != 8)){ //verifica se a lista de StartUps possui 4 ou 8 usuários
         return createJSON(400, "Insira um número válido de StartUps", "");
     } 
     
-    listBattles = randomBattles(listStartUps);
+    listBattles = randomBattles(listStartUps); //realiza o sorteio das batalhas e insere no vetor listBattles
     
     return createJSON(200, "Batalhas foram iniciadas!", "/batalhas");
     
@@ -298,36 +189,42 @@ CROW_ROUTE(app, "/start_battle").methods("POST"_method)([listStartUps, &listBatt
 
 //-------------------------------------CONFRONTOS-----------------------------------------------------------
 
+//rota onde será enviado para o frontend os confrontos disponíveis
 CROW_ROUTE(app, "/battles").methods("GET"_method)([&listBattles](const crow::request& req) {
     
     json battlesAvaliables = json::array();
     
-    for(const auto aux : *listBattles){
+    for(const auto aux : *listBattles){ //for onde será montado o arrays de cada batalha
         battlesAvaliables.push_back({{"battle", aux->getID()}, {"status", aux->getFinalized()}, {"nameA", aux->getStartUpA()->getName()}, {"nameB", aux->getStartUpB()->getName()}});
     }
 
     crow::response res(battlesAvaliables.dump(0));
     res.set_header("Access-Control-Allow-Origin", "*");
-    return res; 
+    return res; //envia as batalhas para o frontend
 
 });
 
+//rota responsável por coordenar a finalização das batalhas
 CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, &classifiedStartUps](const crow::request& req, int idBattle) {
     
-    Battle* battle = (*listBattles)[idBattle];
-    battle->setFinalized();
+    Battle* battle = (*listBattles)[idBattle]; //atribui o valor da batalha específica para a classe Battle
+    battle->setFinalized(); //coloca battle como finalizada (por causa disso que battle em cima precisa ser ponteiro)
     
-    PossibleEvents* eventsA = (battle->getStartUpA()->Events);
-    PossibleEvents* eventsB = (battle->getStartUpB()->Events);
+    //pega os eventos realizados pelas StartUps que estão na batalha
+    PossibleEvents* eventsA = (battle->getStartUpA()->Events); 
+    PossibleEvents* eventsB = (battle->getStartUpB()->Events); 
 
     StartUp* Vencedor;
 
+    //realiza o cálculo dos eventos que foram realizados
     battle->getStartUpA()->editPoints(eventsA->valueEvents());
     battle->getStartUpB()->editPoints(eventsB->valueEvents());
 
+    //coloca todos os eventos como disponíveis para a próxima batalha
     eventsA->cleanBools();
     eventsB->cleanBools();
 
+    //verifica qual StartUp foi a vencedora e realiza o SharkFight caso necessário
     if(battle->getStartUpA()->getPoints() > battle->getStartUpB()->getPoints()){
         Vencedor = battle->getStartUpA();
     } else if(battle->getStartUpA()->getPoints() < battle->getStartUpB()->getPoints()){
@@ -343,24 +240,24 @@ CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, 
     }
 
     
-    Vencedor->winBattlePoints();
-    classifiedStartUps.push_back(Vencedor);
+    Vencedor->winBattlePoints(); //atribui os 30 pontos para a StartUp vencedor
+    classifiedStartUps.push_back(Vencedor); //insere a StartUp vencedor na lista de classificados
 
-    if(battle->getFinalized() == true && (listBattles->size() == 1)){
-        return createJSON(200, "O vencedor foi determinado!", "/vencedor");
+    if(battle->getFinalized() == true && (listBattles->size() == 1)){ //verifica se a batalha da rodada foi finalizada e se a lista de batalhas é igual a 1
+        return createJSON(200, "O vencedor foi determinado!", "/vencedor"); //caso seja, todas as batalhas foram realizadas e temos um vencedor
     }
-    for(const auto aux : *listBattles){
+    for(const auto aux : *listBattles){ //caso não seja verdade, vai verificar ainda tem alguma batalha que não foi finalizada
         if(aux->getFinalized() == false){
             return createJSON(200, "Ainda restam batalhas.", "/batalhas");
     }
     }
 
-    for (Battle* aux : *listBattles) {
+    for (Battle* aux : *listBattles) { //caso todas tenham sido finalizadas, vai fazer o delete da batalha em questão para controle de memória
         delete aux; // desaloca o objeto apontado
     }
     
-    listBattles = randomBattles(classifiedStartUps);
-    classifiedStartUps.clear();
+    listBattles = randomBattles(classifiedStartUps); //irá realizar o sorteio das novas batalhas com as StartUps classificadas
+    classifiedStartUps.clear(); //vai limpar a lista das StartUps para a realização da próxima rodada
         
     return createJSON(200, "Novas batalhas foram sorteadas.", "/batalhas");
 
@@ -370,10 +267,11 @@ CROW_ROUTE(app, "/battle/<int>/finalize").methods("POST"_method)([&listBattles, 
 
 //-------------------------------------EVENTOS-----------------------------------------------------------
 
+//rota responsável por enviar os eventos disponíveis para o frontend
 CROW_ROUTE(app, "/battle/<int>/events").methods("GET"_method)([](const crow::request& req, int idBattle) {
     
     json eventsAvaliables = json::array();
-    eventsAvaliables = {
+    eventsAvaliables = { //atribuindo ao array de json todos os eventos disponíveis
         {{"id", 1},{"name", "Pitch Convincente (+6)"}},
         {{"id", 2},{"name", "Produto com Bugs (-4)"}},
         {{"id", 3},{"name", "Boa Tração de Usuários (+3)"}},
@@ -386,17 +284,19 @@ CROW_ROUTE(app, "/battle/<int>/events").methods("GET"_method)([](const crow::req
     return res;
 });
 
+//rota responsável por enviar os alvos disponíveis para o frontend
 CROW_ROUTE(app, "/battle/<int>/events/<int>/targetlist").methods("GET"_method)([&listBattles, &events](const crow::request& req, int idBattle, int idEvent) {
 
+    //pega a batalha que está sendo realizada e logo em seguida seus eventos
     Battle* battle = (*listBattles)[idBattle];
     PossibleEvents eventsA = *(battle->getStartUpA()->Events);
     PossibleEvents eventsB = *(battle->getStartUpB()->Events);
 
     json messageOption;
 
-    if(events.find(idEvent) != events.end()){
+    if(events.find(idEvent) != events.end()){ //verifica se o evento em questão existe
 
-        if(!(events[idEvent].second(eventsA).first) && (!(events[idEvent].second(eventsB).first))){
+        if(!(events[idEvent].second(eventsA).first) && (!(events[idEvent].second(eventsB).first))){ //verifica se está disponível para ambos
             messageOption = {
                 {{"id", "usuarioA"}, {"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
                 {{"id", "usuarioB"}, {"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
@@ -404,24 +304,24 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/targetlist").methods("GET"_method)([
             };
         
         } else {
-            if(!(events[idEvent].second(eventsA).first)){
+            if(!(events[idEvent].second(eventsA).first)){ //verifica se está disponível para a primeira StartUp
                 messageOption = {
-                    {{"id", "usuarioA"}, {"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                    {{"id", "usuarioB"}, {"status", "not avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"id", "StartUpA"}, {"status", "avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"id", "StartUpB"}, {"status", "not avaliable"}, {"name", battle->getStartUpB()->getName()}},
                     {{"id", ""}, {"status", "not avaliable"}, {"name", "Ambas"}}
                 };
             }
-            else if(!(events[idEvent].second(eventsB).first)){
+            else if(!(events[idEvent].second(eventsB).first)){ //verifica se está disponível para a segunda StartUp
                 messageOption = {     
-                    {{"id", "usuarioA"}, {"status", "not avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                    {{"id", "usuarioB"}, {"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
+                    {{"id", "StartUpA"}, {"status", "not avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"id", "StartUpB"}, {"status", "avaliable"}, {"name", battle->getStartUpB()->getName()}},
                     {{"id", ""}, {"status", "not avaliable"}, {"name", "Ambas"}}
                 };
             }
-            else {
-                messageOption = {     
-                    {{"id", "usuarioA"}, {"status", "not avaliable"}, {"name", battle->getStartUpA()->getName()}},
-                    {{"id", "usuarioB"}, {"status", "not avaliable"}, {"name", battle->getStartUpB()->getName()}},
+            else { //caso esteja indisponível para as duas
+                messageOption = { 
+                    {{"id", "StartUpA"}, {"status", "not avaliable"}, {"name", battle->getStartUpA()->getName()}},
+                    {{"id", "StartUpB"}, {"status", "not avaliable"}, {"name", battle->getStartUpB()->getName()}},
                     {{"id", ""}, {"status", "not avaliable"}, {"name", "Ambas"}}
                 };
             }
@@ -433,8 +333,10 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/targetlist").methods("GET"_method)([
     return res;
 });
 
+//rota responsável por cadastrar os eventos realizados pelos usuários
 CROW_ROUTE(app, "/battle/<int>/events/<int>/target").methods("POST"_method)([&listBattles, &events](const crow::request& req, int idBattle, int idEvent) {
 
+    //pega a batalha em questão e suas respectivas listas de eventos
     Battle* battle = (*listBattles)[idBattle];
     PossibleEvents* eventsA = (battle->getStartUpA()->Events);
     PossibleEvents* eventsB = (battle->getStartUpB()->Events);
@@ -444,13 +346,13 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/target").methods("POST"_method)([&li
 
     std::string stringOption = option["name"];
 
-    if(stringOption == "usuarioA"){
+    if(stringOption == "StartUpA"){ //verifica através do frontend se foi a StartUpA
         events[idEvent].first(*eventsA);
         return createJSON(201, "Evento realizado.", location);
-    } else if(stringOption == "usuarioB"){
+    } else if(stringOption == "StartUpB"){ //verifica através do frontend se foi a StartUpB
         events[idEvent].first(*eventsB);
         return createJSON(202, "Evento realizado.", location);
-    } else{
+    } else{ //caso seja escolhido ambas, as duas irão realizar o evento
         events[idEvent].first(*eventsA);
         events[idEvent].first(*eventsB);
         return createJSON(203, "Evento realizado.", location);
@@ -465,6 +367,7 @@ CROW_ROUTE(app, "/battle/<int>/events/<int>/target").methods("POST"_method)([&li
 
 //-------------------------------------FINAL--------------------------------------------------------------
 
+//rota responsável por enviar para o frontend o vencedor a lista final de resultados
 CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classifiedStartUps](const crow::request& req) {
 
     StartUp* Vencedor = classifiedStartUps[0];
@@ -512,10 +415,11 @@ CROW_ROUTE(app, "/final_results").methods("GET"_method)([&listStartUps, &classif
 
 
 
-app.port(8080).multithreaded().run();
+app.port(8080).multithreaded().run(); //iniciando o servidor através da porta 8080
 
 }
 
+//função responsável por criar o json de resposta
 crow::response createJSON(int status, std::string message, std::string next){
     json resposta;
     resposta["message"] = message;
@@ -524,6 +428,25 @@ crow::response createJSON(int status, std::string message, std::string next){
     }
 
     crow::response res(status, resposta.dump(4));
+    res.set_header("Access-Control-Allow-Origin", "*");
+    return res;
+}
+
+//função responsável por criar o HTML de resposta
+crow::response returnHTML(std::string html){
+
+    std::ifstream file("./frontend/pages/" + html);
+
+    if (!file) {
+        std::cerr << "Erro: index.html não encontrado!" << std::endl;
+        return crow::response(404, "HTML não encontrado");
+    }
+    
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    
+    crow::response res(buffer.str());
+    res.set_header("Content-Type", "text/html");
     res.set_header("Access-Control-Allow-Origin", "*");
     return res;
 }
