@@ -1,26 +1,5 @@
 #include "./include/utils.h"
 
-void printListStartUps(std::vector<StartUp*> listStartUps){
-    if(listStartUps.size() == 0){
-        std::cout << "Nenhuma StartUp cadastrada." << std::endl;
-    } else{
-        for (int i = 0; i < listStartUps.size(); i++) {
-            std::cout << "StartUp " << i+1;
-            std::cout << ": Nome: " << listStartUps[i]->getName();
-            std::cout << " - Slogan: " << listStartUps[i]->getSlogan();
-            std::cout << " - Fundação: " << listStartUps[i]->getFoundation();
-            std::cout << " - Pontos " << listStartUps[i]->getPoints() << std::endl;
-        }
-    }
-    return;
-}
-
-void printListBattles(std::vector<std::pair<StartUp*, StartUp*>> Battles){
-        for (int i = 0; i < Battles.size(); i++) {
-            std::cout << "Batalha " << i+1 << ": " << Battles[i].first->getName() << " x " << Battles[i].second->getName() << std::endl;
-        }
-}
-
 std::vector<StartUp*> ordeningPointsRanking(std::vector<StartUp*> listStartUps){
     StartUp* aux;
     for(int i = 0; i < listStartUps.size(); i++){
